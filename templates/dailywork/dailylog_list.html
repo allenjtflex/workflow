@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div>
+    <form action="" method="GET">
+      <input type="text" name="q" placeholder="Customer  Number or Title"  value="{{ request.GET.q }}"/>
+      <input type="submit"  value="Search" class="btn btn-success"/>
+      <!--<span ><a href="/prod_model/create" class="btn btn-primary">Create New</a></span>-->
+      <span align="right">
+          <div class="pagination">
+             <ul class="pager">
+                <span>{{ title }}</span>
+                <span class="step-links">
+                    {% if page_obj.has_previous %}
+                        <li><a href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+                    {% endif %}
+
+                    <span class="current">
+                        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                    </span>
+
+                    {% if page_obj.has_next %}
+                        <li><a href="?page={{ page_obj.next_page_number }}">next</a></li>
+                    {% endif %}
+                </span>
+              </ul>
+          </div>
+      </span>
+    </form>
+</div>
+
+
+<div>
+<table class="table table-striped" >
+  <tr>
+    <th width="5%">Id</th>
+    <th width="8%">工作日期</th>
+    <th width="20%">客戶名稱</th>
+    <th width="8%">地點起迄</th>
+    <th width="25%">內容描述</th>
+    <th width="8%">數量</th>
+    <th width="5%">單價</th>
+    <th >備註事項</th>
+  </tr>
+{% for record in object_list %}
+  <tr>
+    <td>{{ record.id }}</td>
+    <td>{{ record.work_date| date:"Y-m-d"  }}</td>
+    <td><a href='{{ record.get_absolute_url }}'>{{ record.customer }}</a></td>
+    <td>{{ record.start_at }}-{{ record.end_with }}</td>
+    <td>{{ record.opreateDesc }}</td>
+    <td>{{ record.quantity }}{{ record.uom }}</td>
+    <td>{{ record.uniprice }}</td>
+    <td>{{ record.notes }}</td>
+  </tr>
+{% endfor %}
+</table>
+<div>
+
+{% endblock content %}

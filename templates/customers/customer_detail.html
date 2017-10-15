@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+
+<strong>客戶編號：</strong>{{ object.id }}<br>
+<strong>客戶名稱：</strong>{{ object.title }}<br>
+<strong>統一編號：</strong>{{ object.unikey }}<br>
+<strong>電話：</strong>{{ object.phone }}<br>
+<strong>傳真：</strong>{{ object.faxno }}<br>
+<strong>地址：</strong>{{ object.address }}<br>
+<hr>
+<div align="center" >
+<h2><strong>未請款明細</strong></h2></div>
+<table class="table table-striped" >
+  <tr>
+    <th width="5%">項次</th>
+    <th width="15%">工作日期</th>
+    <th width="15%">地點起迄</th>
+    <th width="20%">工作描述</th>
+    <th width="10%">數量</th>
+    <th width="10%">單價</th>
+    <th >備註事項</th>
+  </tr>
+{% for dailylog in object.dailylog_set.all %}
+<tr>
+    <td>{{ forloop.counter }}</td>
+    <td>{{ dailylog.work_date }}</td>
+    <td>{{ dailylog.start_at }}-{{ dailylog.end_with }}</td>
+    <td>{{ dailylog.opreateDesc }}</td>
+    <td>{{ dailylog.quantity }}{{ dailylog.uom }}</td>
+    <td>{{ dailylog.uniprice }}</td>
+    <td>{{ dailylog.notes }}</td>
+</tr>
+
+{% endfor %}
+</table>
+{% endblock content %}
