@@ -14,7 +14,7 @@ class Uom(models.Model):
 
 class Dailylog(models.Model):
 
-	work_date = models.DateField(default=timezone.now)
+	work_date = models.DateField( default=timezone.now )
 	customer = models.ForeignKey(Customer)
 	start_at = models.CharField(  max_length=20, null=False, blank=False )
 	end_with = models.CharField(  max_length=20, null=False, blank=False )
@@ -24,8 +24,7 @@ class Dailylog(models.Model):
 	uniprice = models.DecimalField( max_digits=10, decimal_places=0)
 	notes = models.TextField(blank=True, null=True)
 
-
-	payrequest = models.BooleanField(default=False)#
+	payrequest = models.BooleanField(default=False)
 	bill_number = models.CharField(  max_length=20, null=True, blank=True )
 	invalid = models.BooleanField(default=False)
 	create_at = models.DateTimeField( auto_now_add=True, auto_now=False)
@@ -34,4 +33,4 @@ class Dailylog(models.Model):
 	def __str__(self):
 		return self.opreateDesc
 	def get_absolute_url(self):
-		return reverse( "dailywork:detail", kwargs={"pk": self.pk} )
+		return reverse( "dailywork:dailywork_edit", kwargs={"pk": self.pk} )
