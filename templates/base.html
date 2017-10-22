@@ -99,28 +99,39 @@
                         </li>
 
 
+                        <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                      role="button" aria-haspopup="true" aria-expanded="false">工作日誌 <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li>
+                                <a href="/dailywork">
+                                    <span>工作日誌清單</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/dailywork/create/">
+                                    <span>新增工作日誌</span>
+                                </a>
+                            </li>
+                          </ul>
+                        </li>
 
-
-                          <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                        role="button" aria-haspopup="true" aria-expanded="false">工作日誌 <span class="caret"></span></a>
-                            <ul class="dropdown-menu">
-                              <li>
-                                  <a href="/dailywork">
-                                      <span>工作日誌清單</span>
-                                  </a>
-                              </li>
-                              <li>
-                                  <a href="/dailywork/create/">
-                                      <span>新增工作日誌</span>
-                                  </a>
-                              </li>
-                            </ul>
-                          </li>
-
-
-
-
+                        <li class="dropdown">
+                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
+                                      role="button" aria-haspopup="true" aria-expanded="false">請款單 <span class="caret"></span></a>
+                          <ul class="dropdown-menu">
+                            <li>
+                                <a href="/bills">
+                                    <span>請款清單</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="/bills/create/">
+                                    <span>新增請款單</span>
+                                </a>
+                            </li>
+                          </ul>
+                        </li>
 
                         {% if perms.quoted.add_order %}
                         <li class="dropdown">

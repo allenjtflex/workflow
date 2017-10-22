@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+
+
+{% block content %}
+<table>
+  <tr>
+    <td>{{ bill.id }}</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>{{ bill.ord_date }}</td>
+    <td>{{ bill.customer }}</td>
+  </tr>
+  <tr>
+    <td>{{ bill.customer.unikey }}</td>
+    <td>{{ bill.customer.phone }}</td>
+  </tr>
+  <tr>
+    <td>{{ bill.customer.faxno }}</td>
+    <td>{{ bill.customer.address }} </td>
+  </tr>
+</table>
+
+<hr><h3 align='center'><strong>項目明細</strong></h3>
+<a href="{{ bill.get_absolute_url }}gen_pdfv2" class="btn btn-primary" target="_blank">列印請款單</a>
+
+<div>
+<table class="table table-striped" >
+  <tr>
+    <th width="5%">項次</th>
+    <th width="12%">工作日期</th>
+    <th width="12%">起始地點</th>
+    <th >內容描述</th>
+    <th width="10%">數量</th>
+    <th width="10%">單價</th>
+    <th width="10%">金額</th>
+  </tr>
+ {% for items in bill.billitem_set.all %}
+  <tr>
+    <td><input type="checkbox" name="dailylog_id" value="{{ items.item.id }}" />{{ forloop.counter }}</td>
+    <td><a href='{{ items.get_absolute_url }}'>{{ items.item.work_date }}</a></td>
+    <td>{{ items.item.start_at }} - {{ items.item.end_with }}</td>
+    <td>{{ items.item.opreateDesc }} </td>
+    <td>{{ items.item.quantity }} {{ items.item.uom}}</td>
+    <td>{{ items.item.uniprice }} </td>
+    <td>{{ items.item.uniprice }} </td>
+  </tr>
+{% endfor %}
+</table>
+<div>
+
+
+{% endblock content %}

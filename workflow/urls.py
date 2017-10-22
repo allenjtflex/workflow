@@ -26,6 +26,7 @@ urlpatterns = [
     url(r'^$', index),
     url(r'^customers/', include( 'customers.urls', namespace="customers")),
     url(r'^dailywork/', include( 'dailywork.urls', namespace="dailywork")),
+    url(r'^bills/', include( 'bills.urls', namespace="bills")),
 ]
 
 if settings.DEBUG:
