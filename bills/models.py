@@ -40,7 +40,7 @@ class BillNumberManager(models.Manager):
 
 class Bill(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.CASCADE)
-    bill_number = models.CharField(max_length=12, null=True, blank=True, unique=True) 
+    bill_number = models.CharField(max_length=12, null=True, blank=True, unique=True)
     ord_date = models.DateField(default=timezone.now) #請款日期
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
@@ -64,7 +64,7 @@ class Bill(models.Model):
 
 class BillItem(models.Model):
     bill = models.ForeignKey(Bill)
-    item = models.ForeignKey(Dailylog,  related_name='bill_items')
+    item = models.ForeignKey(Dailylog,  on_delete=models.CASCADE,related_name='bill_items')
 
 
     class Meta:

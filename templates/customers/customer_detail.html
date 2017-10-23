@@ -12,29 +12,38 @@
 <strong>地址：</strong>{{ object.address }}<br>
 <a href="{{ instance.get_absolute_url }}edit" class="btn btn-warning" role="button">Edit</a>
 <hr>
-<div align="center" >
-<h2><strong>未請款明細</strong></h2></div>
-<table class="table table-striped" >
-  <tr>
-    <th width="5%">項次</th>
-    <th width="15%">工作日期</th>
-    <th width="15%">地點起迄</th>
-    <th width="20%">工作描述</th>
-    <th width="10%">數量</th>
-    <th width="10%">單價</th>
-    <th >備註事項</th>
-  </tr>
-{% for dailylog in object.dailylog_set.all %}
-<tr>
-    <td>{{ forloop.counter }}</td>
-    <td>{{ dailylog.work_date }}</td>
-    <td>{{ dailylog.start_at }}-{{ dailylog.end_with }}</td>
-    <td>{{ dailylog.opreateDesc }}</td>
-    <td>{{ dailylog.quantity }}{{ dailylog.uom }}</td>
-    <td>{{ dailylog.uniprice }}</td>
-    <td>{{ dailylog.notes }}</td>
-</tr>
 
-{% endfor %}
-</table>
+
+<form   action="" method="POST">
+
+    <div align="center"  >
+      <h2><strong>未請款明細</strong></h2>
+    </div>
+    <div >
+      <button type="button"  class="btn btn-success form-control">請款</button>
+    </div>
+
+  <table class="table table-striped" >
+    <tr>
+      <th width="5%">項次</th>
+      <th width="15%">工作日期</th>
+      <th width="15%">地點起迄</th>
+      <th width="20%">工作描述</th>
+      <th width="10%">數量</th>
+      <th width="10%">單價</th>
+      <th >備註事項</th>
+    </tr>
+  {% for dailylog in object.dailylog_set.all.paied %}
+    <tr>
+        <td><input type="checkbox" name="dailylog_id" value="{{ dailylog.id }}" />{{ forloop.counter }}</td>
+        <td>{{ dailylog.work_date }}</td>
+        <td>{{ dailylog.start_at }}-{{ dailylog.end_with }}</td>
+        <td>{{ dailylog.opreateDesc }}</td>
+        <td>{{ dailylog.quantity }}{{ dailylog.uom }}</td>
+        <td>{{ dailylog.uniprice }}</td>
+        <td>{{ dailylog.notes }}</td>
+    </tr>
+  {% endfor %}
+  </table>
+</form>
 {% endblock content %}

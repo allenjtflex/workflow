@@ -20,6 +20,22 @@ class BillList(ListView):
     model = Bill
 
 
+
+def billitem_delete(request, id):
+
+    #print( request.POST.get['order_id'] )
+    if request.POST or None:
+        rq = request.POST.getlist('dailylogs')
+
+        instance = OrderItem.objects.filter(id__in= rq )
+        print(instance)
+        # instance.delete()
+        return HttpResponseRedirect("../")
+        #return HttpResponseRedirect("../%s" %str(request.POST['order_id']))
+
+    return render(request, "../%s" %str(request.POST['bill_id']), locals())
+
+
 #
 # class CustomerCreate(CreateView):
 #     title = "Create New Customer"
@@ -212,7 +228,6 @@ def _generate_pdfv2(course, output):
 
     element = []
     tableheader = ['項次','工作日期', '起迄地點', '內容描述' ,'數量','單價','小計']
-    #tableheader = ['No.','Image', 'Product      Description                                                            ', 'Quantity' ,'Price']
 
     element.append(tableheader)
     loopcounter = 1
@@ -238,38 +253,7 @@ def _generate_pdfv2(course, output):
         myitem.append( str_qty )
         myitem.append(  str('{:,.0f}'.format(int( uniprice )))  )
         myitem.append(  str('{:,.0f}'.format(int( amount ))) )
-    #
-    #     line_remark =""
-    #     if item.is_special:
-    #         special = "★ Customized Product"
-    #         productname = "%s      %s" %(item.orderitem_name, special)
-    #
-    #     if item.line_remark is not None:
-    #         line_remark = "%s %s" %("Remark: ", item.line_remark)
-    #
-    #
-    #     desctiption = "Watt: "+ str(item.orderitem_watt) + " , Option1:" + item.orderitem_option1 + " , Beam Angle:" + item.orderitem_beam_angle + ' , CRI: ' + str(item.orderitem_cri) + ' , CCT: ' +item.orderitem_cct
-    #     myitem.append( productname + '\n' +desctiption + '\nDimming Option:'+ str(item.orderitem_dimming) + '\nModel No: '+ item.orderitem_modelname + '\n' + line_remark )
-    #
-    #     qty_group = [  item.quantity, item.quantity1, item.quantity2, item.quantity3]
-    #     price_group = [item.price, item.price1, item.price2, item.price3]
-    #
-    #     str_qty = ''
-    #     str_price = ''
-    #
-    #     for q in qty_group:
-    #         if q is not None:
-    #             str_qty += str('{:,.0f}'.format(int(q)))+'\n'
-    #
-    #     for p in price_group:
-    #         if p is not None:
-    #             #加上貨幣符號
-    #             str_price += str(course.currency.symbol) + str('{:,.2f}'.format(float(p)))+'\n'
-    #
-    #
-    #     myitem.append( str_qty )
-    #     myitem.append( str_price )
-    #
+
         element.append(myitem)
         loopcounter += 1
 
@@ -326,9 +310,6 @@ def _generate_pdfv2(course, output):
 
     style = getSampleStyleSheet()['Normal']
     style.leading = 8
-    # generalterm.content   通用條款 Start
-    #Story.append(PageBreak())
-
 
 
     doc.build(Story, onFirstPage=myFirstPage, onLaterPages=myLaterPage )
