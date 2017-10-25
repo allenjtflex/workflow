@@ -7,7 +7,7 @@
 <div>
 <table class="table table-striped" >
   <tr>
-    <th width="5%">Id</th>
+    <th width="5%">請款單號</th>
     <th width="20%">客戶名稱</th>
     <th width="10%">統一編號</th>
     <th width="10%">聯絡電話</th>
@@ -17,7 +17,7 @@
   </tr>
 {% for record in object_list %}
   <tr>
-    <td>{{ record.id }}</td>
+    <td>{{ record.bill_number }}</td>
 
     <td><a href='{{ record.get_absolute_url }}'>{{ record.customer }}</a></td>
 

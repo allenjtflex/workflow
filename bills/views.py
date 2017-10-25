@@ -1,5 +1,5 @@
 from django.shortcuts import render, get_object_or_404
-
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.detail import  DetailView
 from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
@@ -8,6 +8,7 @@ from django.db.models import Q
 
 # Create your views here.
 from .models import Bill, BillItem
+from dailywork.models import Dailylog
 # from .forms import CustomerForm,CustomerEditForm
 
 
@@ -23,23 +24,27 @@ class BillList(ListView):
 
 def billitem_delete(request, id):
 
-    #print( request.POST.get['order_id'] )
+
+    print( id )
     if request.POST or None:
         rq = request.POST.getlist('dailylogs')
 
-        instance = OrderItem.objects.filter(id__in= rq )
-        print(instance)
-        # instance.delete()
-        return HttpResponseRedirect("../")
-        #return HttpResponseRedirect("../%s" %str(request.POST['order_id']))
 
-    return render(request, "../%s" %str(request.POST['bill_id']), locals())
+        logitem = Dailylog.objects.filter(id__in = rq)
+        logitem.update( payrequest=False  ) #先把已請款的標記更改爲False
+
+        instance = BillItem.objects.filter(item__in= rq )
+        instance.delete() #再刪除項目
+
+        return HttpResponseRedirect("../")
+
+    return render(request, "../", locals())
 
 
 #
-# class CustomerCreate(CreateView):
+# class BillCreate(CreateView):
 #     title = "Create New Customer"
-#     model = Customer
+#     model = Bill
 #     form_class = CustomerForm
 #     #fields = ['part_number', 'description', 'specification', 'image',  'category', 'cycle_status']
 #     success_url = reverse_lazy('customers:customer_list')
@@ -144,9 +149,11 @@ def myLaterPage(canvas, doc):
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle,PropertySet
 from reportlab.lib.enums import TA_JUSTIFY, TA_RIGHT, TA_LEFT, TA_CENTER
 from reportlab.lib import colors
+
+# 'fontName':'Times-Roman'
 class ParagraphStyle(PropertySet):
     defaults = {
-        'fontName':'Times-Roman',
+        'fontName':'simhei',
         'fontSize':10,
         'leading':12,
         'leftIndent':0,
@@ -155,7 +162,7 @@ class ParagraphStyle(PropertySet):
         'alignment':0,
         'spaceBefore':0,
         'spaceAfter':0,
-        'bulletFontName':'Times-Roman',
+        'bulletFontName':'simhei',
         'bulletFontSize':10,
         'bulletIndent':0,
         'textColor': colors.black,
@@ -208,7 +215,7 @@ def _generate_pdfv2(course, output):
     normalStyle = stylesheet['Normal']
 
     header = [
-              ['請款單號',':', course.ord_date,'','請款日期',':', course.ord_date],
+              ['請款單號',':', course.bill_number,'','請款日期',':', course.ord_date],
               ['客戶名稱',':', course.customer.title,'', '統一編號',':', course.customer.unikey],
               ['聯絡電話',':', course.customer.phone,'','傳真號碼',':', course.customer.faxno],
               ['地址',':', course.customer.address,'', '','', ""],
@@ -244,15 +251,15 @@ def _generate_pdfv2(course, output):
         uom = obj.item.uom
         str_qty = str('{:,.0f}'.format(int(qty))) + ' ' + str(uom)
         uniprice = obj.item.uniprice
-        amount = qty * uniprice
-        grund_total += amount
+        # amount = qty * uniprice
+        # grund_total += amount
 
         myitem.append( workdate)
         myitem.append( place)
         myitem.append( workdesc )
         myitem.append( str_qty )
         myitem.append(  str('{:,.0f}'.format(int( uniprice )))  )
-        myitem.append(  str('{:,.0f}'.format(int( amount ))) )
+        myitem.append(  str('{:,.0f}'.format(int( obj.item.get_amount() ))) )
 
         element.append(myitem)
         loopcounter += 1
@@ -263,15 +270,15 @@ def _generate_pdfv2(course, output):
     t.setStyle(
         TableStyle(
             [('BACKGROUND',(0,0),(6,0),colors.skyblue),
-            ('FONTNAME', (0,0),(6,-1), 'simhei'),
+             ('FONTNAME', (0,0),(6,-1), 'simhei'),
              ('ALIGN',(0,0),(3,0),'CENTER'),
              ('ALIGN',(4,0),(5,0),'LEFT'),
-             ('SIZE',(0,1),(0,-1), 8),
-             ('SIZE',(2,1),(2,-1), 8),
+            #  ('SIZE',(0,1),(0,-1), 8),
+            #  ('SIZE',(2,1),(2,-1), 8),
              ('VALIGN',(0,0),(4,-1),'TOP'),
              ('ALIGN',(4,0),(6,-1), 'RIGHT'),
             #  ('TEXTCOLOR',(3,1),(4,-1), colors.blue),
-             ('SIZE',(3,1),(4,-1), 8),
+             ('SIZE',(0,1),(4,-1), 10),
              ('LINEBELOW', (0,-1), (-1,-1), 1, colors.black),
              ]
         )
@@ -287,12 +294,12 @@ def _generate_pdfv2(course, output):
        <para align=left spaceb=3><font face="simhei" >'''+ str(myinfo).replace('\n','<br/>\n') +'''</font></para>''',
        styles["BodyText"])
 
-    tax = int(grund_total) * 0.05
-    total = int(grund_total) + int(tax)
+    tax = int(course.get_tax_amount())
+    total = int(course.get_grand_amount())
 
 
     footer = [
-                [ '匯款帳號：', '', '金額小計：','', str('{:,.0f}'.format(int( grund_total )))   ],
+                [ '匯款帳號：', '', '金額小計：','', str('{:,.0f}'.format(int( course.get_total_amount() )))   ],
                 ['','新光銀行：八德分行', '稅額：','', str('{:,.0f}'.format(int( tax )))  ],
                 ['','帳號：0596-50-000-6453', '請款金額：','', str('{:,.0f}'.format(int( total )))  ],
                 ['','戶名：林泰成', '', '',''  ],

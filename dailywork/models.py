@@ -55,5 +55,9 @@ class Dailylog(models.Model):
 
 	def __str__(self):
 		return self.opreateDesc
+	
 	def get_absolute_url(self):
 		return reverse( "dailywork:dailywork_edit", kwargs={"pk": self.pk} )
+
+	def get_amount(self):
+		return self.quantity * self.uniprice

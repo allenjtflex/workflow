@@ -1,39 +1,42 @@
 {% extends "base.html" %}
-
-
+{% load humanize %}
 
 {% block content %}
 
-  <script type="text/javascript">
-  function deleteOnSubmit( str ){
-    alert( "deleteOnSubmit()" )
-    var items = document.getElementsByName("dailylogs");
-    var schecked = 0;
-    for( x=0; x < items.length; x++ ){
 
-      if(items[x].checked== true){
-        alert( items[x] )
-          schecked += 1;
-        }
-    }
+<script type="text/javascript">
+function deleteOnSubmit( str ){
 
-    if(schecked==0){
-        window.alert("沒有選擇要刪除的項目喔");
-        return false;
-    }else{
-      var iChoose = confirm("是否確定刪除勾選的資料？");
-
-      if(!iChoose){
-        return false;
-      }else{
-        alert("這會刪除喔")
-        document.getElementById("delform").action = "/bills/"+{{ order.id }}+"/deleteitem/";
-        delform.submit();
+  var items = document.getElementsByName("dailylogs");
+  var schecked = 0;
+  for( x=0; x < items.length; x++ ){
+    if(items[x].checked== true){
+        schecked += 1;
       }
-    }
-    return true;
   }
-  </script>
+  // window.alert( schecked );
+
+  if(schecked==0){
+      window.alert("沒有選擇要刪除的項目喔");
+
+      return false;
+  }else{
+    var iChoose = confirm("是否確定刪除勾選的資料？");
+
+    if(!iChoose){
+      return false;
+    }else{
+      // window.alert("這會刪除喔");
+      document.getElementById("delform").action = "/bills/"+{{ bill.id }}+"/deleteitem/";
+      // window.alert("這會刪除喔");
+      delform.submit();
+      // return false; //DEBUG
+    }
+  }
+  return true;
+}
+</script>
+
 
 
 
@@ -41,7 +44,7 @@
 <table>
   <tr>
     <td>{{ bill.id }}</td>
-    <td></td>
+    <td>{{ bill.bill_number }}</td>
   </tr>
   <tr>
     <td>{{ bill.ord_date }}</td>
@@ -58,7 +61,7 @@
 </table>
 
 <hr><h3 align='center'><strong>項目明細</strong></h3>
-<form id="delform" action="" method="POST" onsubmit="return deleteOnSubmit( {{ bill.id }} )" >{% csrf_token %}
+<form id="delform" action="" method="POST" onsubmit="return deleteOnSubmit({{ bill.id }})" >{% csrf_token %}
   <div class="form-inline" >
   <button type="submit"  class="btn btn-danger form-control" >項目刪除</button>
   <a href="{{ bill.get_absolute_url }}gen_pdfv2" class="btn btn-primary form-control" target="_blank">列印請款單</a>
@@ -70,23 +73,33 @@
       <th width="12%">工作日期</th>
       <th width="12%">起始地點</th>
       <th >內容描述</th>
-      <th width="10%">數量</th>
-      <th width="10%">單價</th>
-      <th width="10%">金額</th>
+      <th width="10%"  align="right">數量</th>
+      <th width="10%"  align="right">單價</th>
+      <th width="10%"  align="right">金額</th>
     </tr>
    {% for items in bill.billitem_set.all %}
     <tr>
       <td><input type="checkbox" name="dailylogs" id='dailylog_{{ items.item.id }}' value="{{ items.item.id }}" />{{ forloop.counter }}</td>
-      <td><a href='{{ items.get_absolute_url }}'>{{ items.item.work_date }}</a></td>
+      <td>{{ items.item.work_date }}</td>
       <td>{{ items.item.start_at }} - {{ items.item.end_with }}</td>
       <td>{{ items.item.opreateDesc }} </td>
-      <td>{{ items.item.quantity }} {{ items.item.uom}}</td>
-      <td>{{ items.item.uniprice }} </td>
-      <td>{{ items.item.uniprice }} </td>
+      <td  align="right">{{ items.item.quantity|intcomma  }} {{ items.item.uom}}</td>
+      <td  align="right">{{ items.item.uniprice|intcomma  }} </td>
+      <td  align="right">{{ items.item.get_amount|intcomma }} </td>
     </tr>
   {% endfor %}
   </table>
 </form>
+  <div>
+    <table class="table table-striped" >
+      <tr  align="right">
+        <td>金額小計：</td><td width="20%" >{{ bill.get_total_amount|intcomma}}</td>
+        </tr>  <tr  align="right">
+        <td>稅額：</td><td width="20%" >{{ bill.get_tax_amount|intcomma  }}</td>
+      </tr>  <tr align="right">
+        <td>金額總計：</td><td width="20%" >{{ bill.get_grand_amount|intcomma}}</td>
+      </tr>
+  <div>
 <div>
 
 

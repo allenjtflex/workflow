@@ -13,7 +13,7 @@ class BillItemInline(admin.TabularInline):
 
 class BillAdmin(admin.ModelAdmin):
 
-    list_display = [ 'is_valid','customer']
+    list_display = [ 'is_valid','customer','bill_number']
     list_display_links = ['customer']
     raw_id_fields = ['customer']
     list_filter = ['is_valid']

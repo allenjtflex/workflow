@@ -53,8 +53,15 @@ class Bill(models.Model):
     def __str__(self):
         return 'Bill {}'.format(self.id)
 
-    # def get_total_cost(self):
-    #     return sum(item.get_cost() for item in self.items.all())
+    def get_total_amount(self):
+        total =  sum( int(obj.item.get_amount()) for obj in self.billitem_set.all())
+        return total
+
+    def get_tax_amount(self):
+        return int(float(self.get_total_amount()) * 0.05)
+
+    def get_grand_amount(self):
+        return sum( (self.get_total_amount(), self.get_tax_amount()))
 
 
     def get_absolute_url(self):
