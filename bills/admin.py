@@ -8,7 +8,7 @@ from .models import Bill, BillItem
 class BillItemInline(admin.TabularInline):
     model = BillItem
     raw_id_fields = ['item']
-
+    
 
 
 class BillAdmin(admin.ModelAdmin):

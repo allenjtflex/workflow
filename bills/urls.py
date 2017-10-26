@@ -12,6 +12,7 @@ urlpatterns = [
     # url(r'^(?P<pk>\d+)/edit/$', CustomerUpdate.as_view( template_name = 'customers/customer_form.html' ), name="customer_edit" ),
 
     url(r'^(?P<id>\d+)/deleteitem/$', views.billitem_delete ),
+    url(r'^checkout/(?P<id>\d+)/$', views.bill_create ),
 
     url(r'^(?P<id>\d+)/gen_pdfv2/$', views.gen_pdfv2 , name="gen_pdfv2" ),
 

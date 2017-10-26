@@ -7,7 +7,9 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.db.models import Q
 
 # Create your views here.
+from .forms import BillCreateForm
 from .models import Bill, BillItem
+from customers.models import Customer
 from dailywork.models import Dailylog
 # from .forms import CustomerForm,CustomerEditForm
 
@@ -22,13 +24,48 @@ class BillList(ListView):
 
 
 
+
+def bill_create(request, id):
+
+
+    #raw_id_fields = ['customer']
+    if request.method == 'POST':
+        customer = Customer.objects.get(pk=id)
+        rq = request.POST.getlist('dailylogs')
+        bill_number = Bill.objects.month_sequence()
+        # print(id)   #客戶編號
+        # print(rq)   #dailywork Item
+        #
+        print(bill_number)  # New Bill Number
+
+        form = BillCreateForm(request.POST or None)
+        form.instance.bill_number = bill_number
+
+        print( form.instance.bill_number )
+        bill = form.save()
+
+
+        dailyworks = Dailylog.objects.filter( pk__in= rq )
+        for dailylog in dailyworks:
+            BillItem.objects.create(
+                bill_id = bill.id,
+                item = dailylog
+            )
+
+        dailyworks.update( payrequest=True  )
+
+        return HttpResponseRedirect( '/bills/%s/' %( bill.id )  )
+
+
+    return render(request,'/bills/%s/' %( bill.id ),locals())
+
+
+
+
 def billitem_delete(request, id):
-
-
-    print( id )
+    # print( id )
     if request.POST or None:
         rq = request.POST.getlist('dailylogs')
-
 
         logitem = Dailylog.objects.filter(id__in = rq)
         logitem.update( payrequest=False  ) #先把已請款的標記更改爲False

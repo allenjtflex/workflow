@@ -3,6 +3,40 @@
 
 
 {% block content %}
+<script type="text/javascript">
+function CreateOnSubmit( str ){
+
+  var items = document.getElementsByName("dailylogs");
+  var schecked = 0;
+  for( x=0; x < items.length; x++ ){
+    if(items[x].checked== true){
+        schecked += 1;
+      }
+  }
+  // window.alert( schecked );
+
+  if(schecked==0){
+      window.alert("沒有選擇要請款的項目喔");
+      return false;
+  }else{
+    var iChoose = confirm("勾選的項目是否確定為要請款的資料？");
+
+    if(!iChoose){
+      return false;
+    }else{
+
+      document.getElementById("createform").action = "/bills/checkout/"+{{ customer.id }}+"/";
+      createform.submit();
+
+    }
+  }
+  return true;
+}
+</script>
+
+
+
+
 
 <strong>客戶編號：</strong>{{ object.id }}<br>
 <strong>客戶名稱：</strong>{{ object.title }}<br>
@@ -13,14 +47,16 @@
 <a href="{{ instance.get_absolute_url }}edit" class="btn btn-warning" role="button">Edit</a>
 <hr>
 
-
-<form   action="" method="POST">
+<!--
+<form   action="" method="POST"> -->
 
     <div align="center"  >
       <h2><strong>未請款明細</strong></h2>
     </div>
+<form id="createform" action="" method="POST" onsubmit="return CreateOnSubmit({{ bill.id }})" >{% csrf_token %}
     <div >
-      <button type="button"  class="btn btn-success form-control">請款</button>
+      <input type="text" id="customer_id" name="customer" value="{{ object.id }}" hidden="True"/> 
+      <button type="submit"  class="btn btn-success form-control">請款</button>
     </div>
 
   <table class="table table-striped" >
@@ -36,7 +72,7 @@
     </tr>
   {% for dailylog in object.dailylog_set.all.paied %}
     <tr>
-        <td><input type="checkbox" name="dailylog_id" value="{{ dailylog.id }}" />{{ forloop.counter }}</td>
+        <td><input type="checkbox" name="dailylogs" value="{{ dailylog.id }}" />{{ forloop.counter }}</td>
         <td>{{ dailylog.work_date }}</td>
         <td>{{ dailylog.start_at }}-{{ dailylog.end_with }}</td>
         <td>{{ dailylog.opreateDesc }}</td>
