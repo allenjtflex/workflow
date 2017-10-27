@@ -18,6 +18,7 @@ class DailylogDetail(DetailView):
 
 class DailylogList(ListView):
 	model = Dailylog
+	paginate_by = 10
 
 
 

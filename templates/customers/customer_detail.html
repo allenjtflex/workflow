@@ -55,7 +55,7 @@ function CreateOnSubmit( str ){
     </div>
 <form id="createform" action="" method="POST" onsubmit="return CreateOnSubmit({{ bill.id }})" >{% csrf_token %}
     <div >
-      <input type="text" id="customer_id" name="customer" value="{{ object.id }}" hidden="True"/> 
+      <input type="text" id="customer_id" name="customer" value="{{ object.id }}" hidden="True"/>
       <button type="submit"  class="btn btn-success form-control">請款</button>
     </div>
 
@@ -70,7 +70,7 @@ function CreateOnSubmit( str ){
       <th width="10%">金額</th>
       <th >備註事項</th>
     </tr>
-  {% for dailylog in object.dailylog_set.all.paied %}
+  {% for dailylog in object.dailylog_set.all.norequest %}
     <tr>
         <td><input type="checkbox" name="dailylogs" value="{{ dailylog.id }}" />{{ forloop.counter }}</td>
         <td>{{ dailylog.work_date }}</td>

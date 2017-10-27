@@ -21,29 +21,20 @@ class BillDetail(DetailView):
 
 class BillList(ListView):
     model = Bill
+    paginate_by = 10
 
 
 
 
 def bill_create(request, id):
-
-
     #raw_id_fields = ['customer']
     if request.method == 'POST':
         customer = Customer.objects.get(pk=id)
         rq = request.POST.getlist('dailylogs')
-        bill_number = Bill.objects.month_sequence()
-        # print(id)   #客戶編號
-        # print(rq)   #dailywork Item
-        #
-        print(bill_number)  # New Bill Number
+        next_number = Bill.objects.month_sequence()
 
-        form = BillCreateForm(request.POST or None)
-        form.instance.bill_number = bill_number
-
-        print( form.instance.bill_number )
-        bill = form.save()
-
+        bill = Bill( customer = customer, bill_number=next_number )
+        bill.save()
 
         dailyworks = Dailylog.objects.filter( pk__in= rq )
         for dailylog in dailyworks:
@@ -52,10 +43,8 @@ def bill_create(request, id):
                 item = dailylog
             )
 
-        dailyworks.update( payrequest=True  )
-
+        dailyworks.update( payrequest=True, bill_number=next_number  )
         return HttpResponseRedirect( '/bills/%s/' %( bill.id )  )
-
 
     return render(request,'/bills/%s/' %( bill.id ),locals())
 
@@ -68,8 +57,7 @@ def billitem_delete(request, id):
         rq = request.POST.getlist('dailylogs')
 
         logitem = Dailylog.objects.filter(id__in = rq)
-        logitem.update( payrequest=False  ) #先把已請款的標記更改爲False
-
+        logitem.update( payrequest=False, bill_number=None ) #先把已請款的標記更改爲False
         instance = BillItem.objects.filter(item__in= rq )
         instance.delete() #再刪除項目
 
@@ -78,30 +66,18 @@ def billitem_delete(request, id):
     return render(request, "../", locals())
 
 
-#
-# class BillCreate(CreateView):
-#     title = "Create New Customer"
-#     model = Bill
-#     form_class = CustomerForm
-#     #fields = ['part_number', 'description', 'specification', 'image',  'category', 'cycle_status']
-#     success_url = reverse_lazy('customers:customer_list')
-#
-#
-#
-# class CustomerUpdate(UpdateView):
-#     model = Customer
-#     form_class = CustomerEditForm
-#     #fields = ['title', 'unikey', 'address', 'phone', 'faxno', 'invalid']
-#
-#     success_url = reverse_lazy('customers:customer_list') #因為不會回到該項資料的Detail, 所以先回到List吧
-#
-#
-# class CustomerDelete(DeleteView):
-#     model = Customer
-#     #success_url = '/products'
-#     success_url = reverse_lazy('customers:customer_list')
 
 
+# 明確數量的報價單,有金額小計及總金額的  Quota-B
+def gen_pdfv2(request,id):
+    course = get_object_or_404(Bill,id=id)
+    response = HttpResponse(content_type='application/pdf')
+    filename = '%s-%s.pdf' %( str(course.bill_number), course.customer)
+    response['Content-Disposition'] = 'filename=' + filename
+
+    _generate_pdfv2(course, response)
+
+    return response
 
 
 
@@ -357,14 +333,3 @@ def _generate_pdfv2(course, output):
 
 
     doc.build(Story, onFirstPage=myFirstPage, onLaterPages=myLaterPage )
-
-# 明確數量的報價單,有金額小計及總金額的  Quota-B
-def gen_pdfv2(request,id):
-    course = get_object_or_404(Bill,id=id)
-    response = HttpResponse(content_type='application/pdf')
-    filename = 'PaymentRequest%s.pdf' %( str(course.bill_number))
-    response['Content-Disposition'] = 'filename=' + filename
-
-    _generate_pdfv2(course, response)
-
-    return response

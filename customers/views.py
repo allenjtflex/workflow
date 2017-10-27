@@ -18,6 +18,7 @@ class CustomerDetail(DetailView):
 
 class CustomerList(ListView):
     model = Customer
+    paginate_by = 10
 
 
 

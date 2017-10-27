@@ -15,7 +15,8 @@ class Uom(models.Model):
 
 class DailylogQueryset(models.query.QuerySet):
 
-	def paied(self):
+	# 未請款的項目
+	def norequest(self):
 		return self.filter(payrequest=False)
 
 
@@ -25,8 +26,9 @@ class DailylogManager(models.Manager):
 	def get_queryset(self):
 		return DailylogQueryset(self.model, using=self.db)
 
-	def paied(self, *args, **kwargs):
-		return self.query_set().paied()
+	# 未請款的項目
+	def norequest(self, *args, **kwargs):
+		return self.query_set().norequest()
 
 
 
@@ -46,6 +48,7 @@ class Dailylog(models.Model):
 	notes = models.TextField(blank=True, null=True)
 
 	payrequest = models.BooleanField(default=False)    # 是否已請款
+	is_freecharge = models.BooleanField(default=False)    # 是否爲免費項目, 如果為免費項目則在未請款清單是不會顯示的
 	bill_number = models.CharField(  max_length=20, null=True, blank=True )
 	invalid = models.BooleanField(default=False)
 	create_at = models.DateTimeField( auto_now_add=True, auto_now=False)
@@ -55,7 +58,7 @@ class Dailylog(models.Model):
 
 	def __str__(self):
 		return self.opreateDesc
-	
+
 	def get_absolute_url(self):
 		return reverse( "dailywork:dailywork_edit", kwargs={"pk": self.pk} )
 
