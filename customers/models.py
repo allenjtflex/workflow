@@ -7,14 +7,14 @@ from django.core.urlresolvers import reverse
 #客戶
 class Customer(models.Model):
 
-    title = models.CharField(max_length=36, null=False, blank=False)
-    unikey = models.CharField(  max_length=12,null=True, blank=True, unique=True )
-    address = models.CharField( max_length=100, null=True, blank=True)
+    title = models.CharField(max_length=36, null=False, blank=False, verbose_name='客戶名稱')
+    unikey = models.CharField(  max_length=12,null=True, blank=True, unique=True, verbose_name='統一編號' )
+    address = models.CharField( max_length=100, null=True, blank=True, verbose_name='地址')
 
-    phone = models.CharField(max_length=20, null=True, blank=True)
-    faxno = models.CharField(max_length=20, null=True, blank=True)
-    #email = models.EmailField(max_length=100, null=True, blank=True)
-    invalid = models.BooleanField(default=False)#作廢
+    phone = models.CharField(max_length=20, null=True, blank=True, verbose_name='電話')
+    faxno = models.CharField(max_length=20, null=True, blank=True, verbose_name='傳真')
+
+    invalid = models.BooleanField(default=False, verbose_name='停用')
 
     create_at = models.DateTimeField(auto_now_add=True, auto_now =False)
     modify = models.DateTimeField(auto_now_add=False, auto_now =True)

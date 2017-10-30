@@ -9,9 +9,9 @@
   <tr>
     <th width="5%">請款單號</th>
     <th width="20%">客戶名稱</th>
-    <th width="10%">統一編號</th>
-    <th width="10%">聯絡電話</th>
-    <th width="10%">傳真</th>
+    <th width="8%">統一編號</th>
+    <th width="8%">聯絡電話</th>
+    <th width="8%">傳真</th>
     <th align='right' width="10%">請款金額</th>
     <th >地址</th>
   </tr>
@@ -27,28 +27,28 @@
   </tr>
 {% endfor %}
 </table>
+</div>
 <div>
-  <div>
-    <span align="center">
-        <div class="pagination">
-           <ul class="pager">
-              <span>{{ title }}</span>
-              <span class="step-links">
-                  {% if page_obj.has_previous %}
-                      <li><a href="?page={{ page_obj.previous_page_number }}">previous</a></li>
-                  {% endif %}
+  <span align="center">
+      <div class="pagination">
+         <ul class="pager">
+            <span>{{ title }}</span>
+            <span class="step-links">
+                {% if page_obj.has_previous %}
+                    <li><a href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+                {% endif %}
 
-                  <span class="current">
-                      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                  </span>
+                <span class="current">
+                    Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                </span>
 
-                  {% if page_obj.has_next %}
-                      <li><a href="?page={{ page_obj.next_page_number }}">next</a></li>
-                  {% endif %}
-              </span>
-            </ul>
-        </div>
-    </span>
-  </div>
+                {% if page_obj.has_next %}
+                    <li><a href="?page={{ page_obj.next_page_number }}">next</a></li>
+                {% endif %}
+            </span>
+          </ul>
+      </div>
+  </span>
+</div>
 
 {% endblock content %}

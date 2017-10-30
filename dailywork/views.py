@@ -18,7 +18,8 @@ class DailylogDetail(DetailView):
 
 class DailylogList(ListView):
 	model = Dailylog
-	paginate_by = 10
+	paginate_by = 5
+	ordering = ['-work_date']
 
 
 
@@ -37,4 +38,4 @@ class DailylogEdit(UpdateView):
     model = Dailylog
     form_class = DailylogEditForm
     #fields = ['part_number', 'description', 'specification', 'image',  'category', 'cycle_status']
-    success_url = reverse_lazy('dailywork:dailywork_list')
+    success_url = reverse_lazy('bills:bill_edit')

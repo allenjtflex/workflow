@@ -59,6 +59,7 @@ function deleteOnSubmit( str ){
     <td>{{ bill.customer.address }} </td>
   </tr>
 </table>
+<a href="{{ bill.get_absolute_url }}edit" class="btn btn-primary" >修改請款單</a>
 
 <hr><h3 align='center'><strong>項目明細</strong></h3>
 <form id="delform" action="" method="POST" onsubmit="return deleteOnSubmit({{ bill.id }})" >{% csrf_token %}

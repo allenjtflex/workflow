@@ -9,8 +9,12 @@ from customers.models import Customer
 from dailywork.models import Dailylog
 
 
+
+
 #自訂單據號碼
 class BillNumberManager(models.Manager):
+
+
 
     #短的月份序號如：16080001
     def short_month_sequence(self):
@@ -45,7 +49,7 @@ class Bill(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     objects = BillNumberManager()
-    is_valid = models.BooleanField(default=True)
+    is_valid = models.BooleanField(default=False, verbose_name='單據作廢')
 
     class Meta:
         ordering = ('-created',)
@@ -66,6 +70,9 @@ class Bill(models.Model):
 
     def get_absolute_url(self):
         return reverse('bills:bill_detail', kwargs={"pk": self.id} )
+
+    def get_effective(self):
+        return self.filter( in_valid= True  )
 
 
 

@@ -22,11 +22,15 @@ class DailylogForm(forms.ModelForm):
                                         label=('計量單位') )
     uniprice = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control'   } ) ,label=('單價'),required=False)
     notes = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control'    } ),label=('備註事項'),required=False)
+    is_freecharge = forms.CheckboxInput()
 
 
     class Meta:
         model = Dailylog
         exclude = ('create_at','modify','invalid','payrequest', 'bill_number')
+
+
+
 
 
 

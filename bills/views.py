@@ -11,7 +11,7 @@ from .forms import BillCreateForm
 from .models import Bill, BillItem
 from customers.models import Customer
 from dailywork.models import Dailylog
-# from .forms import CustomerForm,CustomerEditForm
+from .forms import BillEditForm
 
 
 class BillDetail(DetailView):
@@ -23,6 +23,11 @@ class BillList(ListView):
     model = Bill
     paginate_by = 10
 
+class BillUpdate(UpdateView):
+    title = '修訂請款單'
+    model = Bill
+    form_class = BillEditForm
+    success_url = reverse_lazy('bills:bill_list')
 
 
 

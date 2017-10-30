@@ -10,7 +10,18 @@ class BillCreateForm(forms.ModelForm):
     bill_number = forms.CharField( widget= forms.TextInput(),required=False )
     ord_date = forms.CharField( widget= forms.TextInput(),required=False )
 
-
     class Meta:
         model = Bill
         exclude = ('create','updated','is_valid' )
+
+
+class BillEditForm(forms.ModelForm):
+    customer = forms.ModelChoiceField( queryset= Customer.objects.filter(invalid=False),
+                                        widget= forms.Select( attrs={'class':'form-control' } )
+                                        ,required=False
+                                        ,label=('客戶') )
+    ord_date = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' ,'readonly':'readonly'} ) )
+    bill_number = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' ,'readonly':'readonly'}) )
+    class Meta:
+        model = Bill
+        exclude = ('create','updated' )
