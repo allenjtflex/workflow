@@ -38,4 +38,4 @@ class DailylogEdit(UpdateView):
     model = Dailylog
     form_class = DailylogEditForm
     #fields = ['part_number', 'description', 'specification', 'image',  'category', 'cycle_status']
-    success_url = reverse_lazy('bills:bill_edit')
+    success_url = reverse_lazy('dailywork:dailywork_list')

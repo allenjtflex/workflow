@@ -25,7 +25,6 @@
   </tr>
 {% for record in object_list %}
   <tr>
-
     <td>{{ record.work_date| date:"Y-m-d"  }}</td>
     <td><a href='{{ record.get_absolute_url }}'>{{ record.customer }}</a></td>
     <td>{{ record.start_at }}-{{ record.end_with }}</td>

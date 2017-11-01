@@ -10,10 +10,17 @@ from dailywork.models import Dailylog
 
 
 
+class BillQueryset(models.query.QuerySet):
+
+	# 未請款的項目
+	def get_effective(self):
+		return self.filter( is_valid= True  )
+
+
+
 
 #自訂單據號碼
 class BillNumberManager(models.Manager):
-
 
 
     #短的月份序號如：16080001
@@ -40,6 +47,13 @@ class BillNumberManager(models.Manager):
         nextNumber = self.filter(created__contains = order_date ).count()+1
         bill_number = nextNumber + int(order_date.replace('-','')[2:])*10000
         return bill_number
+    # 
+    # def get_queryset(self):
+    #     return BillQueryset(self.model, using=self.db)
+    #
+    #
+    # def get_effective(self):
+    #     return self.query_set().get_effective()
 
 
 class Bill(models.Model):
@@ -49,7 +63,7 @@ class Bill(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     objects = BillNumberManager()
-    is_valid = models.BooleanField(default=False, verbose_name='單據作廢')
+    is_valid = models.BooleanField(default=False)
 
     class Meta:
         ordering = ('-created',)
@@ -71,8 +85,8 @@ class Bill(models.Model):
     def get_absolute_url(self):
         return reverse('bills:bill_detail', kwargs={"pk": self.id} )
 
-    def get_effective(self):
-        return self.filter( in_valid= True  )
+    # def get_effective(self):
+    #     return self.filter( is_valid__exact=1  )
 
 
 

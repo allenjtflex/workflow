@@ -36,7 +36,7 @@ class CustomerUpdate(UpdateView):
     form_class = CustomerEditForm
     #fields = ['title', 'unikey', 'address', 'phone', 'faxno', 'invalid']
 
-    success_url = reverse_lazy('customers:customer_list') #因為不會回到該項資料的Detail, 所以先回到List吧
+    success_url = reverse_lazy('customers:customer_list')
 
 
 class CustomerDelete(DeleteView):

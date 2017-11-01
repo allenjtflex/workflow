@@ -20,7 +20,9 @@ class BillDetail(DetailView):
 
 
 class BillList(ListView):
+    title = "已請款清單"
     model = Bill
+    queryset = Bill.objects.filter( is_valid__exact=False  )
     paginate_by = 10
 
 class BillUpdate(UpdateView):

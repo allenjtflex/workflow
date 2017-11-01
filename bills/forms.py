@@ -20,8 +20,8 @@ class BillEditForm(forms.ModelForm):
                                         widget= forms.Select( attrs={'class':'form-control' } )
                                         ,required=False
                                         ,label=('客戶') )
-    ord_date = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' ,'readonly':'readonly'} ) )
-    bill_number = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' ,'readonly':'readonly'}) )
+    ord_date = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' ,'readonly':'readonly'} ) ,label=('請款日期'))
+    bill_number = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' ,'readonly':'readonly'}),label=('請款單號') )
     class Meta:
         model = Bill
         exclude = ('create','updated' )
