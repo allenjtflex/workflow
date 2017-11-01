@@ -20,6 +20,16 @@ class CustomerList(ListView):
     model = Customer
     paginate_by = 10
 
+    def get_queryset(self):
+        query = self.request.GET.get('q')
+        if query:
+            query_list = Customer.objects.filter(
+                Q(title__icontains=query)
+            ).distinct()
+            return query_list
+
+        return Customer.objects.all()
+
 
 
 class CustomerCreate(CreateView):

@@ -21,6 +21,20 @@ class DailylogList(ListView):
 	paginate_by = 5
 	ordering = ['-work_date']
 
+	def get_queryset(self):
+		query = self.request.GET.get('q')
+		if query:
+			query_list = Dailylog.objects.filter(
+			          Q(opreateDesc__icontains=query)|
+					  Q(start_at__icontains=query)|
+					  Q(end_with__icontains=query)|
+					  Q(notes__icontains=query)
+
+			)
+			return query_list
+		return Dailylog.objects.all()
+
+
 
 
 

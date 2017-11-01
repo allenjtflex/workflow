@@ -38,7 +38,7 @@ class Dailylog(models.Model):
 	customer = models.ForeignKey(Customer)
 	start_at = models.CharField(  max_length=20, null=False, blank=False )
 	end_with = models.CharField(  max_length=20, null=False, blank=False )
-	opreateDesc = models.CharField(max_length=30, blank=False, null=False)
+	opreateDesc = models.CharField(max_length=20, blank=False, null=False)
 	quantity = models.DecimalField( max_digits=10, decimal_places=0)
 	uom = models.ForeignKey(Uom)
 	uniprice = models.DecimalField( max_digits=10, decimal_places=0)

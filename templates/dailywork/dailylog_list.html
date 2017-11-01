@@ -15,8 +15,9 @@
 <div>
 <table class="table table-striped" >
   <tr>
+    <th width="8%">狀態</th>
     <th width="8%">工作日期</th>
-    <th width="20%">客戶名稱</th>
+    <th width="15%">客戶名稱</th>
     <th width="8%">地點起迄</th>
     <th width="25%">內容描述</th>
     <th width="8%">數量</th>
@@ -25,6 +26,17 @@
   </tr>
 {% for record in object_list %}
   <tr>
+    <td>
+      {% if record.payrequest %}
+      <strong class="label label-danger">已請款</strong>
+      {% endif %}
+      {% if record.is_freecharge %}
+      <strong class="label label-success">免費</strong>
+      {% endif %}
+
+
+
+    </td>
     <td>{{ record.work_date| date:"Y-m-d"  }}</td>
     <td><a href='{{ record.get_absolute_url }}'>{{ record.customer }}</a></td>
     <td>{{ record.start_at }}-{{ record.end_with }}</td>

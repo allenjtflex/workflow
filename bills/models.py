@@ -10,11 +10,11 @@ from dailywork.models import Dailylog
 
 
 
-class BillQueryset(models.query.QuerySet):
-
-	# 未請款的項目
-	def get_effective(self):
-		return self.filter( is_valid= True  )
+# class BillQueryset(models.query.QuerySet):
+#
+# 	# 未請款的項目
+# 	def get_effective(self):
+# 		return self.filter( is_valid= True  )
 
 
 
@@ -47,7 +47,7 @@ class BillNumberManager(models.Manager):
         nextNumber = self.filter(created__contains = order_date ).count()+1
         bill_number = nextNumber + int(order_date.replace('-','')[2:])*10000
         return bill_number
-    # 
+    #
     # def get_queryset(self):
     #     return BillQueryset(self.model, using=self.db)
     #
@@ -63,7 +63,8 @@ class Bill(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)
     objects = BillNumberManager()
-    is_valid = models.BooleanField(default=False)
+    is_valid = models.BooleanField(default=False, verbose_name="單據作廢")# True代表此單據作廢
+    paied = models.BooleanField(default=False,verbose_name="已付款")# True代表此單據已付款
 
     class Meta:
         ordering = ('-created',)
@@ -98,13 +99,11 @@ class BillItem(models.Model):
     class Meta:
         ordering = ( 'item', )
 
-
-
     def __str__(self):
         return '{}'.format(self.id)
 
-    # def get_cost(self):
-    #     return self.price * self.quantity
+    def get_item_amount(self):
+        return self.uniprice * self.quantity
 
 
     def get_absolute_url(self):
