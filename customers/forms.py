@@ -20,7 +20,7 @@ class CustomerEditForm(forms.ModelForm):
     address = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control' } ) ,label='發票地址',required=False)
     phone = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control'   } ),label='聯絡電話' ,required=False )
     faxno = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control'  } ),label='傳真號碼',required=False )
-    invalid  =forms.BooleanField(required=False )
+
 
     class Meta:
         model = Customer
