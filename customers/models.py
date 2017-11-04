@@ -8,7 +8,7 @@ from django.core.urlresolvers import reverse
 class Customer(models.Model):
 
     title = models.CharField(max_length=36, null=False, blank=False, verbose_name='客戶名稱')
-    unikey = models.CharField(  max_length=12,null=True, blank=True, unique=True, verbose_name='統一編號' )
+    unikey = models.CharField(  max_length=12,null=True, blank=True, verbose_name='統一編號' )
     address = models.CharField( max_length=100, null=True, blank=True, verbose_name='地址')
 
     phone = models.CharField(max_length=20, null=True, blank=True, verbose_name='電話')

@@ -46,7 +46,7 @@
               <span>{{ title }}</span>
               <span class="step-links">
                   {% if page_obj.has_previous %}
-                      <li><a href="?page={{ page_obj.previous_page_number }}">previous</a></li>
+                      <li><a href="?page={{ page_obj.previous_page_number }}">上一頁</a></li>
                   {% endif %}
 
                   <span class="current">
@@ -54,7 +54,7 @@
                   </span>
 
                   {% if page_obj.has_next %}
-                      <li><a href="?page={{ page_obj.next_page_number }}">next</a></li>
+                      <li><a href="?page={{ page_obj.next_page_number }}">下一頁</a></li>
                   {% endif %}
               </span>
             </ul>
