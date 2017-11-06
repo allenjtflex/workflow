@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.db.models import Q
 
 # Create your views here.
-from .forms import BillCreateForm
+from .forms import BillCreateForm,BillGenerateForm
 from .models import Bill, BillItem
 from customers.models import Customer
 from dailywork.models import Dailylog
@@ -33,6 +33,45 @@ class BillUpdate(UpdateView):
 
 
 
+def generate_bill(request):
+# 先抓出符合條件的工作日誌
+    title = '結轉請款單'
+    form = BillGenerateForm(request.POST or None)
+    date =  request.POST.get('ord_date')
+    if form.is_valid():
+
+
+        logs = Dailylog.objects.filter(payrequest=False ,
+                                        is_freecharge=False,
+                                        invalid=False
+                                )#.values('customer').order_by('customer').distinct()
+
+        custs = logs.values('customer').order_by('customer').distinct()# 去除重複的客戶編號
+
+    # 迴圈產生請款單
+        for cust in custs:
+            customer = Customer.objects.get(pk= cust.get('customer'))
+            next_number = Bill.objects.month_sequence()
+            bill = Bill.objects.create(customer=customer,ord_date=date,bill_number=next_number)
+
+            cust_logs = logs.filter(customer=customer)
+            for cust_log in cust_logs:
+                BillItem.objects.create(
+                    bill_id = bill.id,
+                    item = cust_log
+                )
+            cust_logs.update( payrequest=True, bill_number=next_number  )
+
+        return render(request,'bills/bill_list.html',locals())
+
+
+
+    return render(request,'bills/bill_generate.html',locals())
+
+
+
+
+
 def bill_create(request, id):
     #raw_id_fields = ['customer']
     if request.method == 'POST':
@@ -40,7 +79,7 @@ def bill_create(request, id):
         rq = request.POST.getlist('dailylogs')
         next_number = Bill.objects.month_sequence()
 
-        bill = Bill( customer = customer, bill_number=next_number )
+        bill = Bill.objects.create( customer = customer, bill_number=next_number )
         bill.save()
 
         dailyworks = Dailylog.objects.filter( pk__in= rq )
@@ -111,7 +150,7 @@ from reportlab.lib.units import inch
 PAGE_HEIGHT = defaultPageSize[1]
 PAGE_WIDTH=defaultPageSize[0]
 styles = getSampleStyleSheet()
-Title = "建龍環保股份有限公司"
+Title = "建龍環保有限公司"
 Subject = "請款單"
 
 # logo = settings.STATIC_ROOT +"/img/alder_logo.png"
@@ -241,7 +280,7 @@ def _generate_pdfv2(course, output):
               ['地址',':', course.customer.address,'', '','', ""],
               ]
 
-    h = Table(header, colWidths=[1.0*inch, 0.1*inch, 2.8*inch, 0.3*inch, 0.9*inch, 0.1*inch, 2.0*inch] ,style=[
+    h = Table(header, colWidths=[0.6*inch, 0.1*inch, 3.2*inch, 1.4*inch, 0.6*inch, 0.1*inch, 1.6*inch] ,style=[
 
                         ('FONTNAME', (0,0),(6,-1), 'simhei'),
                         ('SPAN',(2,0),(3,0)),
@@ -285,13 +324,15 @@ def _generate_pdfv2(course, output):
         loopcounter += 1
 
     #repeatRows=1 是指第一行(表頭) 換頁時會重複
-    t = Table(element, colWidths=[0.3*inch, 0.8*inch, 0.8*inch, 2.6*inch, 0.8*inch,  0.8*inch, 1.0*inch] , repeatRows=1)
+    t = Table(element, colWidths=[0.3*inch, 0.8*inch, 1.4*inch, 2.8*inch, 0.6*inch,  0.8*inch, 0.8*inch] , repeatRows=1)
 
     t.setStyle(
         TableStyle(
-            [('BACKGROUND',(0,0),(6,0),colors.skyblue),
+            [
+            #   ('BACKGROUND',(0,0),(6,0),colors.skyblue),
+            ('LINEBELOW', (0,0), (6,0), 1, colors.black),
              ('FONTNAME', (0,0),(6,-1), 'simhei'),
-             ('ALIGN',(0,0),(3,0),'CENTER'),
+             ('ALIGN',(0,0),(0,0),'CENTER'),
              ('ALIGN',(4,0),(5,0),'LEFT'),
             #  ('SIZE',(0,1),(0,-1), 8),
             #  ('SIZE',(2,1),(2,-1), 8),
@@ -319,13 +360,14 @@ def _generate_pdfv2(course, output):
 
 
     footer = [
+                [ '', '', '','', ''   ],
                 [ '匯款帳號：', '', '金額小計：','', str('{:,.0f}'.format(int( course.get_total_amount() )))   ],
                 ['','新光銀行：八德分行', '稅額：','', str('{:,.0f}'.format(int( tax )))  ],
                 ['','帳號：0596-50-000-6453', '請款金額：','', str('{:,.0f}'.format(int( total )))  ],
                 ['','戶名：林泰成', '', '',''  ],
                   ]
 
-    f = Table(footer,colWidths=[ 0.6*inch, 2.5*inch, 2.5*inch, 0.8*inch, 0.6*inch] ,style=[
+    f = Table(footer,colWidths=[ 0.6*inch, 2.5*inch, 2.5*inch, 0.6*inch, 0.6*inch] ,style=[
 
                         ('FONTNAME', (0,0),(4,-1), 'simhei'),
                         ('ALIGN',(2,0),(4,-1), 'RIGHT'),

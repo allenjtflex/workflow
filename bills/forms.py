@@ -25,3 +25,8 @@ class BillEditForm(forms.ModelForm):
     class Meta:
         model = Bill
         exclude = ('create','updated' )
+
+
+# 自動產生請款單
+class BillGenerateForm(forms.Form):
+    ord_date = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' } ) ,label=('請款截止日期'))

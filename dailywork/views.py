@@ -31,8 +31,9 @@ class DailylogList(ListView):
 					  Q(notes__icontains=query)
 
 			)
-			return query_list
-		return Dailylog.objects.all()
+			return query_list.order_by('-work_date')
+
+		return Dailylog.objects.all().order_by('-work_date')
 
 
 
@@ -42,8 +43,9 @@ class DailylogCreate(CreateView):
     title = "Create New Dailylog"
     model = Dailylog
     form_class = DailylogForm
+
     #fields = ['part_number', 'description', 'specification', 'image',  'category', 'cycle_status']
-    success_url = reverse_lazy('dailywork:dailywork_list')
+    success_url = reverse_lazy('dailywork:dailywork_create')
 
 
 

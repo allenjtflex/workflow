@@ -13,6 +13,7 @@ urlpatterns = [
 
     url(r'^(?P<id>\d+)/deleteitem/$', views.billitem_delete ),
     url(r'^checkout/(?P<id>\d+)/$', views.bill_create ),
+    url(r'^bill_genegerate/$', views.generate_bill, name="genegerate_bills" ),
 
     url(r'^(?P<id>\d+)/gen_pdfv2/$', views.gen_pdfv2 , name="gen_pdfv2" ),
 
