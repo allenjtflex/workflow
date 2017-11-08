@@ -1,179 +1,109 @@
 {% load staticfiles %}
 {% load i18n %}
 {% load humanize %}
+<!DOCTYPE html>
 <html>
-    <head>
-        <title>
-            {% block title %}
-                {% trans "建龍環保有限公司" %}
-             {% endblock title%}
+  <head>
+    <!-- Latest compiled and minified CSS -->
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href='{% static "css/bootstrap.min.css" %}' >
+    <link rel="stylesheet" href='{% static "css/bootstrap-theme.min.css" %}' >
 
-            {% block head_extra %} {% endblock head_extra %}
-        </title>
-        <script src="https://use.fontawesome.com/19cf872a01.js"></script>
+    <!-- Font Awesome -->
+    <link href='{% static "css/font-awesome.min.css" %}' rel="stylesheet">
+    <!-- NProgress -->
+    <link rel="stylesheet" href='{% static "css/nprogress.css" %}' >
+    <!-- iCheck -->
+    <link rel="stylesheet" href='{% static "css/green.css" %}' >
 
-        <link href="http://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css" rel="stylesheet">
-        <script src="http://code.jquery.com/jquery-1.10.2.js" ></script>
-        <script src="http://code.jquery.com/ui/1.10.4/jquery-ui.js" ></script>
-        <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}" />
-        <link rel="stylesheet" href="{% static 'css/bootstrap-theme.min.css' %}" />
-        <script src="{% static 'js/bootstrap.min.js' %}" ></script>
-        <!--<script src="{% static 'js/jquery-1.8.2.min.js' %}" ></script>-->
-        <script src="{% static 'js/myajax.js' %}" ></script>
+    <link rel="stylesheet" href='{% static "css/bootstrap-progressbar-3.3.4.min.css" %}' >
 
+    <link rel="stylesheet" href='{% static "css/jqvmap.min.css" %}' >
 
+    <link rel="stylesheet" href='{% static "css/daterangepicker.css" %}' >
 
-        <script type="text/javascript" src="/admin/jsi18n/"></script>
-        <script type="text/javascript" src="/static/admin/js/core.js"></script>
-        <script type="text/javascript" src="/static/admin/js/vendor/jquery/jquery.js"></script>
-        <script type="text/javascript" src="/static/admin/js/jquery.init.js"></script>
-        <script type="text/javascript" src="/static/admin/js/admin/RelatedObjectLookups.js"></script>
-        <script type="text/javascript" src="/static/admin/js/actions.js"></script>
-        <script type="text/javascript" src="/static/admin/js/urlify.js"></script>
-        <script type="text/javascript" src="/static/admin/js/prepopulate.js"></script>
-        <script type="text/javascript" src="/static/admin/js/vendor/xregexp/xregexp.js"></script>
-        <script type="text/javascript" src="/static/admin/js/calendar.js"></script>
-        <script type="text/javascript" src="/static/admin/js/admin/DateTimeShortcuts.js"></script>
+    <link rel="stylesheet" href='{% static  "css/custom.min.css" %}' >
 
 
-
-    </head>
-    <body>
-        <dib class="container">
-        <div class="col-xs-12 col-lg-10 col-lg-offset-1">
-            <div>
-                <div>
-                  <span>
-                      {% if request.user.is_authenticated %}
-                        <span>{{ request.user }}  / </span>
-                        <span>My Profile  /  </span>
-                        <span><a href="/logout">Logout</a></span>
-                        {% else %}
-                        <span><a href="/login">Login</a></span>
-
-                      {% endif %}
-
-                  </span>
-                  </div>
-
+    <meta charset="utf-8">
+    <title>
+      {% block title%}  {% trans "建龍環保有限公司" %} {% endblock title %}
+    </title>
+    <style>
+      {% block style %}{% endblock style %}
+    </style>
+  </head>
+  <body class="nav-md">
+    <div class="container body">
+      <div class="main_container">
+        <div class="col-md-3 left_col">
+          <div class="left_col scroll-view">
+            <div class="navbar nav_title" style="border: 0;">
+              <a href="index.html" class="site_title"><i class="fa fa-paw"></i> <span>Gentelella Alela!</span></a>
             </div>
 
-            <nav class="navbar navbar-inverse">
+            <div class="clearfix"></div>
 
-              <div class="container-fluid">
-                  <div class="navbar-header">
-                      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#topNavBar">
-                          <span class="icon-bar"></span>
-                          <span class="icon-bar"></span>
-                          <span class="icon-bar"></span>
-                          <span class="icon-bar"></span>
-                      </button>
-                  </div>
+            {% include "menu_profile.html" %}
+            <br>
+            {% include "sidebar.html"  %}
 
 
-                  <!-- menu bar -->
-                  <div class="collapse navbar-collapse">
-                      <ul class="nav navbar-nav">
-
-                        <li  class="">
-                            <a href="/customers">
-                              <span class="glyphicon glyphion-cd" aria-hidden="true">&nbsp; </span>
-                            </a>
-                        </li>
-
-                        <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                      role="button" aria-haspopup="true" aria-expanded="false">客戶
-                          <span class="caret"></span></a>
-                          <ul class="dropdown-menu">
-                            <li>
-                                <a href="/customers">
-                                    <span>客戶清單</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/customers/create/">
-                                    <span>新增客戶</span>
-                                </a>
-                            </li>
-                          </ul>
-                        </li>
-
-
-                        <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                      role="button" aria-haspopup="true" aria-expanded="false">工作日誌 <span class="caret"></span></a>
-                          <ul class="dropdown-menu">
-                            <li>
-                                <a href="/dailywork">
-                                    <span>工作日誌清單</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/dailywork/create/">
-                                    <span>新增工作日誌</span>
-                                </a>
-                            </li>
-                          </ul>
-                        </li>
-
-                        <li class="dropdown">
-                          <a href="#" class="dropdown-toggle" data-toggle="dropdown"
-                                      role="button" aria-haspopup="true" aria-expanded="false">請款單 <span class="caret"></span></a>
-                          <ul class="dropdown-menu">
-                            <li>
-                                <a href="/bills">
-                                    <span>請款清單</span>
-                                </a>
-                            </li>
-                            <li>
-                                <a href="/bills/bill_genegerate/">
-                                    <span>新增請款單</span>
-                                </a>
-                            </li>
-                          </ul>
-                        </li>
-
-
-
-
-                        </li>
-                        {% if perms.is_stuff %}
-                        <li  class="">
-                            <a href="/admin">
-                              <span >&nbsp; Management Site </span>
-                            </a>
-                        </li>
-                        {% endif %}
-
-                      </ul>
-
-                  </div>
-                  <!-- Collect the nav links, forms, and other content for toggling -->
-
-              </div>
-            </nav>
+          </div>
+        </div>
+          {% include "top_nav.html" %}
 
             {% block content %}
-
-
             {% endblock content %}
 
-
-
-            <script>
-              $(document).ready(function(){
-                {% block jquery %}
-                {% endblock jquery %}
-              });
-            </script>
-
-                {% block footer %}
-
-                {% endblock footer %}
+            {% include "footer.html"  %}
 
         </div>
+      </div>
+    <!-- jQuery -->
+    <script src='{% static "js/jquery.min.js" %}'></script>
 
-    </div>
-    </body>
+
+    <!-- Latest compiled and minified JavaScript -->
+    <script src='{% static "js/bootstrap.min.js" %}' ></script>
+
+    <!-- FastClick -->
+    <script src='{% static "js/fastclick.js" %}'></script>
+    <!-- NProgress -->
+    <script src='{% static "js/nprogress.js" %}'></script>
+    <!-- Chart.js -->
+    <script src='{% static "js/Chart.min.js" %}'></script>
+    <!-- gauge.js -->
+    <script src='{% static "js/gauge.min.js" %}'></script>
+    <!-- bootstrap-progressbar -->
+    <script src='{% static "js/bootstrap-progressbar.min.js" %}'></script>
+    <!-- iCheck -->
+    <script src='{% static "js/icheck.min.js" %}'></script>
+    <!-- Skycons -->
+    <script src='{% static "js/skycons.js" %}'></script>
+    <!-- Flot -->
+    <script src='{% static "js/jquery.flot.js" %}'></script>
+    <script src='{% static "js/jquery.flot.pie.js" %}'></script>
+    <script src='{% static "js/jquery.flot.time.js" %}'></script>
+    <script src='{% static "js/jquery.flot.stack.js" %}'></script>
+    <script src='{% static "js/jquery.flot.resize.js" %}'></script>
+    <!-- Flot plugins -->
+    <script src='{% static "js/jquery.flot.orderBars.js" %}'></script>
+    <script src='{% static "js/jquery.flot.spline.min.js" %}'></script>
+    <script src='{% static "js/curvedLines.js" %}'></script>
+    <!-- DateJS -->
+    <script src='{% static "js/date.js" %}'></script>
+    <!-- JQVMap -->
+    <script src='{% static "js/jquery.vmap.js" %}'></script>
+    <script src='{% static "js/jquery.vmap.world.js" %}'></script>
+    <script src='{% static "js/jquery.vmap.sampledata.js" %}'></script>
+    <!-- bootstrap-daterangepicker -->
+    <script src='{% static "js/moment.min.js"  %}'></script>
+    <script src='{% static "js/daterangepicker.js"  %}'></script>
+
+    <!-- Custom Theme Scripts -->
+    <script src='{% static "js/custom.min.js" %}'></script>
+
+
+  </body>
 </html>

@@ -1,4 +1,5 @@
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
+
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.detail import  DetailView
 from django.views.generic.list import ListView
@@ -53,7 +54,7 @@ def generate_bill(request):
 
         if custs.count()== 0:
             messages.success(request, '無可新增的請款單')
-            render(request,'bills/bill_generate.html',locals())
+            return render(request,'bills/bill_generate.html',locals())
 
 
 
@@ -75,8 +76,9 @@ def generate_bill(request):
             cust_logs.update( payrequest=True, bill_number=next_number  )
 
         messages.success(request, '新增請款單成功')
+        return redirect('bills:bill_list')
 
-        return render(request,'bills/bill_list.html',locals())
+        # return render(request,'bills/bill_list.html',locals())
 
     return render(request,'bills/bill_generate.html',locals())
 
@@ -127,7 +129,6 @@ def billitem_delete(request, id):
 
 
 
-# 明確數量的報價單,有金額小計及總金額的  Quota-B
 def gen_pdfv2(request,id):
     course = get_object_or_404(Bill,id=id)
     response = HttpResponse(content_type='application/pdf')
@@ -152,8 +153,6 @@ from reportlab.pdfbase.cidfonts import UnicodeCIDFont
 from reportlab.lib.utils import ImageReader
 # from django.contrib.staticfiles.templatetags.staticfiles import static
 
-
-# 正式Quote-A
 
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak, KeepTogether
 from reportlab.lib.styles import getSampleStyleSheet
@@ -191,14 +190,14 @@ def myFirstPage(canvas, doc):
 def myLaterPage(canvas, doc):
     canvas.saveState()
     canvas.setFont('simhei', 9)
-    contact_info = "Alder Optomechanical Corp."
+    contact_info = "建龍環保有限公司"
 
     canvas.setFont('Times-Roman', 9)
     # canvas.drawImage(logo, 520,780, mask='auto', width=55,height=45)
     canvas.drawString(530, 0.45 * inch, "Page %d " % ( doc.page) )
     # canvas.drawString(inch, 0.45 * inch, "Page %d %s" % ( doc.page, pageinfo) )
     # canvas.drawImage(footer_line, 25, 805, mask='auto', width=485,height=20)
-    contact_address = "No.171 Tianjin Street, Pignzhen Dist., Taoyuan City 32458, Taiwan.    www.alder.com.tw    sales@alder.com.tw    +886-3-4393588"
+    contact_address = ""
 
     # 地址放在上面的圖騰下
     canvas.setFont('VeraBd', 9)
@@ -254,8 +253,6 @@ class ParagraphStyle(PropertySet):
         }
 
 
-# 明確數量的報價單,有金額小計及總金額的報表模板
-# 正式Quote-B
 def _generate_pdfv2(course, output):
     from reportlab.lib.enums import TA_JUSTIFY, TA_RIGHT, TA_LEFT, TA_CENTER
     from reportlab.lib.pagesizes import A4
@@ -323,8 +320,6 @@ def _generate_pdfv2(course, output):
         uom = obj.item.uom
         str_qty = str('{:,.0f}'.format(int(qty))) + ' ' + str(uom)
         uniprice = obj.item.uniprice
-        # amount = qty * uniprice
-        # grund_total += amount
 
         myitem.append( workdate)
         myitem.append( place)

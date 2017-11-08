@@ -30,4 +30,4 @@ class BillEditForm(forms.ModelForm):
 first_of_month = datetime.date.today().replace(day=1)
 last_of_prev_month = first_of_month - datetime.timedelta(days=1)
 class BillGenerateForm(forms.Form):
-    ord_date = forms.DateField( initial=last_of_prev_month, widget= forms.TextInput(attrs={'class':'form-control' } ) ,label=('請款截止日期'))
+    ord_date = forms.DateField( initial=last_of_prev_month, widget= forms.TextInput(attrs={'class':'form-control','onfocus':'select()' } ) ,label=('請款截止日期'))

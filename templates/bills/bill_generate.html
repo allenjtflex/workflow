@@ -6,20 +6,26 @@
 <h1 align='center'>
 {{ title }}
 </h1>
-
-<div class="col-sm-8 col-md-10 col-sm-offset-1 col-md-offset-1" >
-<form action='' method="POST"  enctype="multipart/form-data" >{% csrf_token %}
-{{  form.as_p }}
-<input type="submit" class="btn btn-primary form-control" value="儲存"/>
-</form>
+<div class="container">
+    <div class="col-sm-6 col-md-6 col-sm-offset-2 col-md-offset-2" >
+    <form action='' method="POST"  enctype="multipart/form-data" >{% csrf_token %}
+    {{  form.as_p }}
+    <input type="submit" class="btn btn-primary form-control" value="儲存"/>
+    </form>
+    </div>
 </div>
+    {% if messages %}
+    <p class="messages">
+      <div class='alert alert-success text-center'>
+        {% for message in messages %}
+        <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+        {% endfor %}
+        </div>
+    </p>
 
-{% if messages %}
-<ul class="messages">
-    {% for message in messages %}
-    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-    {% endfor %}
-</ul>
-{% endif %}
+    {% endif %}
+
+
+
 
 {% endblock content %}

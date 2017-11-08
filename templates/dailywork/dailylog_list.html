@@ -20,8 +20,8 @@
     <th width="15%">客戶名稱</th>
     <th width="8%">地點起迄</th>
     <th width="25%">內容描述</th>
-    <th width="8%">數量</th>
-    <th width="5%">單價</th>
+    <th align='right' width="5%">數量</th>
+    <th align='right' width="5%">單價</th>
     <th >備註事項</th>
   </tr>
 {% for record in object_list %}
@@ -41,8 +41,8 @@
     <td><a href='{{ record.get_absolute_url }}'>{{ record.customer }}</a></td>
     <td>{{ record.start_at }}-{{ record.end_with }}</td>
     <td>{{ record.opreateDesc }}</td>
-    <td>{{ record.quantity }}{{ record.uom }}</td>
-    <td>{{ record.uniprice }}</td>
+    <td align='right'>{{ record.quantity }}{{ record.uom }}</td>
+    <td align='right'>{{ record.uniprice }}</td>
     <td>{{ record.notes }}</td>
   </tr>
 {% endfor %}

@@ -11,11 +11,11 @@
   <tr>
     <th width="5%"></th>
     <th width="5%">請款單號</th>
-    <th width="20%">客戶名稱</th>
+    <th width="15%">客戶名稱</th>
     <th width="8%">統一編號</th>
-    <th width="8%">聯絡電話</th>
-    <th width="8%">傳真</th>
-    <th align='right' width="10%">請款金額</th>
+    <th width="10%">聯絡電話</th>
+    <th width="10%">傳真</th>
+    <th align='right' width="8%">請款金額</th>
     <th >地址</th>
   </tr>
 {% for record in object_list %}
@@ -58,5 +58,14 @@
       </div>
   </span>
 </div>
+{% if messages %}
+<p class="messages">
+  <div class='alert alert-success text-center'>
+    {% for message in messages %}
+    <p{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</p>
+    {% endfor %}
+    </div>
+</p>
 
+{% endif %}
 {% endblock content %}
