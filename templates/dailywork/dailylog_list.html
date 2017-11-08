@@ -2,15 +2,8 @@
 
 {% block content %}
 
-<div>
-    <form action="" method="GET">
-      <input type="text" name="q" placeholder="Customer  Number or Title"  value="{{ request.GET.q }}"/>
-      <input type="submit"  value="Search" class="btn btn-success"/>
-      <!--<span ><a href="/prod_model/create" class="btn btn-primary">Create New</a></span>-->
 
-    </form>
-</div>
-
+{% include "searchbar.html" %}
 
 <div>
 <table class="table table-striped" >

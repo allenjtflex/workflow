@@ -2,14 +2,8 @@
 
 {% block content %}
 
-<div>
-    <form action="" method="GET">
-      <input type="text" class='form-control' name="q" placeholder="Customer  Number or Title"  value="{{ request.GET.q }}"/>
-      <input type="submit"  value="Search" class="btn btn-success"/>
-      <!--<span ><a href="/prod_model/create" class="btn btn-primary">Create New</a></span>-->
-    </form>
-</div>
 
+{% include "searchbar.html" %}
 
 <div>
 <table class="table table-striped" >
@@ -27,6 +21,11 @@
   <tr>
     <td>{{ record.id }}</td>
     <td>
+      {% if record.dailylog_set.all.norequest.count  %}
+      <span class="badge bg-blue">
+      {{ record.dailylog_set.all.norequest.count }}
+      </span>
+      {% endif %}
       {% if record.invalid %}
       <strong class="label label-danger">停用</strong>
       {% endif %}</td>
