@@ -5,13 +5,14 @@ from django.utils import timezone
 from .models import Dailylog
 from customers.models import Customer
 from dailywork.models import Uom
+import datetime
 
 
 class DailylogForm(forms.ModelForm):
     customer = forms.ModelChoiceField( queryset= Customer.objects.filter(invalid=False),
                                         widget= forms.Select( attrs={'class':'form-control' } ),
                                         label=('客戶') )
-    work_date = forms.DateField( initial= timezone.now(),widget= forms.DateInput( attrs={'class':'form-control''vDateField' , 'onfocus':'select()', 'require':'True' } ) ,label=('工作日期'))
+    work_date = forms.DateField( initial= datetime.date.today(),widget= forms.TextInput( attrs={'class':'form-control', 'onfocus':'select()', 'require':'True' } ) ,label=('工作日期'))
     start_at = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control' } ),label=('出發點'),required=True )
     end_with = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control' } ) ,label=('目的地') ,required=True)
     opreateDesc = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control'  } ),label=('工作敘述'),required=True )
@@ -38,7 +39,7 @@ class DailylogEditForm(forms.ModelForm):
     customer = forms.ModelChoiceField( queryset= Customer.objects.filter(invalid=False),
                                         widget= forms.Select( attrs={'class':'form-control' } ),
                                         label=('客戶') )
-    work_date = forms.DateField( initial= timezone.now(),widget= forms.DateInput( attrs={'class':'form-control''vDateField' , 'onfocus':'select()', 'require':'True' } ) ,label=('工作日期'))
+    work_date = forms.DateField( initial= timezone.now(),widget= forms.TextInput( attrs={'class':'form-control' , 'onfocus':'select()', 'require':'True' } ) ,label=('工作日期'))
     start_at = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control' } ),label=('出發點'),required=True )
     end_with = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control' } ) ,label=('目的地') ,required=True)
     opreateDesc = forms.CharField( widget= forms.TextInput( attrs={'class':'form-control'  } ),label=('工作敘述'),required=True )

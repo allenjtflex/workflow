@@ -7,7 +7,7 @@
 {{ title }}
 </h1>
 <div class="container">
-    <div class="col-sm-6 col-md-6 col-sm-offset-2 col-md-offset-2" >
+    <div class="col-sm-8 col-md-8 col-sm-offset-2 col-md-offset-2" >
     <form action='' method="POST"  enctype="multipart/form-data" >{% csrf_token %}
     {{  form.as_p }}
     <input type="submit" class="btn btn-primary form-control" value="儲存"/>
@@ -24,8 +24,6 @@
     </p>
 
     {% endif %}
-
-
 
 
 {% endblock content %}

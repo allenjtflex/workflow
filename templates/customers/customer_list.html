@@ -4,7 +4,7 @@
 
 <div>
     <form action="" method="GET">
-      <input type="text" name="q" placeholder="Customer  Number or Title"  value="{{ request.GET.q }}"/>
+      <input type="text" class='form-control' name="q" placeholder="Customer  Number or Title"  value="{{ request.GET.q }}"/>
       <input type="submit"  value="Search" class="btn btn-success"/>
       <!--<span ><a href="/prod_model/create" class="btn btn-primary">Create New</a></span>-->
     </form>
@@ -38,27 +38,8 @@
   </tr>
 {% endfor %}
 </table>
-<div>
-  <div>
-    <span align="center">
-        <div class="pagination">
-           <ul class="pager">
-              <span>{{ title }}</span>
-              <span class="step-links">
-                  {% if page_obj.has_previous %}
-                      <li><a href="?page={{ page_obj.previous_page_number }}">上一頁</a></li>
-                  {% endif %}
+</div>
 
-                  <span class="current">
-                      Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
-                  </span>
+{% include "pageine.html" %}
 
-                  {% if page_obj.has_next %}
-                      <li><a href="?page={{ page_obj.next_page_number }}">下一頁</a></li>
-                  {% endif %}
-              </span>
-            </ul>
-        </div>
-    </span>
-  </div>
 {% endblock content %}

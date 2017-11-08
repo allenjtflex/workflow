@@ -1,9 +1,10 @@
 {% extends "base.html" %}
 {% load humanize %}
 
+
+
+
 {% block content %}
-
-
 <script type="text/javascript">
 function deleteOnSubmit( str ){
 
@@ -39,9 +40,7 @@ function deleteOnSubmit( str ){
 
 
 
-
-
-<table>
+<table >
   <tr>
     <td>{{ bill.is_valid }}</td>
     <td>{{ bill.bill_number }}</td>
@@ -61,14 +60,16 @@ function deleteOnSubmit( str ){
 </table>
 <a href="{{ bill.get_absolute_url }}edit" class="btn btn-primary" >修改請款單</a>
 
-<hr><h3 align='center'><strong>項目明細</strong></h3>
+<hr>
+<h3 align='center'><strong>項目明細</strong></h3>
 <form id="delform" action="" method="POST" onsubmit="return deleteOnSubmit({{ bill.id }})" >{% csrf_token %}
   <div class="form-inline" >
   <button type="submit"  class="btn btn-danger form-control" >項目刪除</button>
   <a href="{{ bill.get_absolute_url }}gen_pdfv2" class="btn btn-primary form-control" target="_blank">列印請款單</a>
   </div>
+
   <div>
-  <table class="table table-striped" >
+  <table class="table table-striped  bulk_action" >
     <tr>
       <th width="5%">項次</th>
       <th width="12%">工作日期</th>
@@ -90,6 +91,7 @@ function deleteOnSubmit( str ){
     </tr>
   {% endfor %}
   </table>
+  </div>
 </form>
   <div>
     <table class="table table-striped" >
@@ -100,8 +102,9 @@ function deleteOnSubmit( str ){
       </tr>  <tr align="right">
         <td>金額總計：</td><td width="15%" >{{ bill.get_grand_amount|intcomma}}</td>
       </tr>
-  <div>
-<div>
+    </table>
+  </div>
+
 
 
 {% endblock content %}
