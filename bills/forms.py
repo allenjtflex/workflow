@@ -2,7 +2,7 @@ from django import forms
 from pagedown.widgets import PagedownWidget
 from .models import Bill
 from customers.models import Customer
-
+import datetime
 
 
 class BillCreateForm(forms.ModelForm):
@@ -12,13 +12,12 @@ class BillCreateForm(forms.ModelForm):
 
     class Meta:
         model = Bill
-        exclude = ('create','updated','is_valid' )
+        exclude = ('create','updated','is_valid','paied' )
 
 
 class BillEditForm(forms.ModelForm):
     customer = forms.ModelChoiceField( queryset= Customer.objects.filter(invalid=False),
                                         widget= forms.Select( attrs={'class':'form-control' } )
-                                        ,required=False
                                         ,label=('客戶') )
     ord_date = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' ,'readonly':'readonly'} ) ,label=('請款日期'))
     bill_number = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' ,'readonly':'readonly'}),label=('請款單號') )
@@ -28,5 +27,7 @@ class BillEditForm(forms.ModelForm):
 
 
 # 自動產生請款單
+first_of_month = datetime.date.today().replace(day=1)
+last_of_prev_month = first_of_month - datetime.timedelta(days=1)
 class BillGenerateForm(forms.Form):
-    ord_date = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control' } ) ,label=('請款截止日期'))
+    ord_date = forms.DateField( initial=last_of_prev_month, widget= forms.TextInput(attrs={'class':'form-control' } ) ,label=('請款截止日期'))

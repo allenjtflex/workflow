@@ -5,6 +5,7 @@ from django.views.generic.list import ListView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView, FormView
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.db.models import Q
+from django.contrib import messages
 
 # Create your views here.
 from .forms import BillCreateForm,BillGenerateForm
@@ -20,10 +21,11 @@ class BillDetail(DetailView):
 
 
 class BillList(ListView):
-    title = "已請款清單"
+    title = "未付款清單"
     model = Bill
-    queryset = Bill.objects.filter( is_valid__exact=False )
+    queryset = Bill.objects.filter( is_valid__exact=False ,paied=False)
     paginate_by = 10
+
 
 class BillUpdate(UpdateView):
     title = '修訂請款單'
@@ -43,10 +45,18 @@ def generate_bill(request):
 
         logs = Dailylog.objects.filter(payrequest=False ,
                                         is_freecharge=False,
-                                        invalid=False
+                                        invalid=False,
+                                        work_date__lte  =date
                                 )#.values('customer').order_by('customer').distinct()
 
         custs = logs.values('customer').order_by('customer').distinct()# 去除重複的客戶編號
+
+        if custs.count()== 0:
+            messages.success(request, '無可新增的請款單')
+            render(request,'bills/bill_generate.html',locals())
+
+
+
 
     # 迴圈產生請款單
         for cust in custs:
@@ -60,11 +70,13 @@ def generate_bill(request):
                     bill_id = bill.id,
                     item = cust_log
                 )
+
+            #把已經轉成請款單的工作日誌補上請款單號和已請款欄位爲True
             cust_logs.update( payrequest=True, bill_number=next_number  )
 
+        messages.success(request, '新增請款單成功')
+
         return render(request,'bills/bill_list.html',locals())
-
-
 
     return render(request,'bills/bill_generate.html',locals())
 
@@ -89,6 +101,7 @@ def bill_create(request, id):
                 item = dailylog
             )
 
+            #把已經轉成請款單的工作日誌補上請款單號和已請款欄位爲True
         dailyworks.update( payrequest=True, bill_number=next_number  )
         return HttpResponseRedirect( '/bills/%s/' %( bill.id )  )
 
