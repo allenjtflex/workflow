@@ -10,7 +10,8 @@
 <div>
 <table class="table table-striped" >
   <tr>
-    <th width="5%"></th>
+    <th width="5%">
+    </th>
     <th width="5%">請款單號</th>
     <th width="15%">客戶名稱</th>
     <th width="8%">統一編號</th>
@@ -24,10 +25,20 @@
 
     <td>{% if record.is_valid %}
       <strong class="label label-danger">作廢</strong>
-    {% endif %}</td>
+    {% endif %}
+
+  </td>
   <td>
       {{ record.bill_number }}</td>
-    <td><a href='{{ record.get_absolute_url }}'>{{ record.customer }}</a></td>
+    <td>
+      {% if  record.billitem_set.all.count   %}
+      <span class="badge bg-blue">
+      {{ record.billitem_set.all.count }}
+      </span>
+      {% endif %}
+      <a href='{{ record.get_absolute_url }}'>{{ record.customer }}</a>
+
+    </td>
     <td>{{ record.customer.unikey }}</td>
     <td>{{ record.customer.phone }}</td>
     <td>{{ record.customer.faxno }}</td>

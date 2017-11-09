@@ -68,10 +68,16 @@ function deleteOnSubmit( str ){
   <a href="{{ bill.get_absolute_url }}gen_pdfv2" class="btn btn-primary form-control" target="_blank">列印請款單</a>
   </div>
 
+
+  <script>
+      $("#CheckAll").change(function () {
+          $("input:checkbox").prop('checked', $(this).prop("checked"));
+      });
+  </script>
   <div>
   <table class="table table-striped  bulk_action" >
     <tr>
-      <th width="5%">項次</th>
+      <th width="5%"><input type="checkbox" value="核取方塊" id="CheckAll" />項次</th>
       <th width="12%">工作日期</th>
       <th width="12%">起始地點</th>
       <th >內容描述</th>
@@ -91,6 +97,8 @@ function deleteOnSubmit( str ){
     </tr>
   {% endfor %}
   </table>
+
+
   </div>
 </form>
   <div>
