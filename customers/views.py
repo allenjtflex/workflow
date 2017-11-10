@@ -33,7 +33,7 @@ class CustomerList(ListView):
 
 
 class CustomerCreate(CreateView):
-    title = "Create New Customer"
+    subject = "Create New Customer"
     model = Customer
     form_class = CustomerForm
     #fields = ['part_number', 'description', 'specification', 'image',  'category', 'cycle_status']

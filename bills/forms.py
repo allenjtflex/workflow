@@ -29,5 +29,11 @@ class BillEditForm(forms.ModelForm):
 # 自動產生請款單
 first_of_month = datetime.date.today().replace(day=1)
 last_of_prev_month = first_of_month - datetime.timedelta(days=1)
+
 class BillGenerateForm(forms.Form):
     ord_date = forms.DateField( initial=last_of_prev_month, widget= forms.TextInput(attrs={'class':'form-control','onfocus':'select()' } ) ,label=('請款截止日期'))
+
+
+class BatchPrintBills(forms.Form):
+    start_number = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control'}),label=('從') )
+    end_number = forms.CharField( widget= forms.TextInput(attrs={'class':'form-control'}),label=('到') )

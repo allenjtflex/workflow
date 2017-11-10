@@ -37,6 +37,8 @@ function deleteOnSubmit( str ){
   return true;
 }
 </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
 
 
 
@@ -69,11 +71,6 @@ function deleteOnSubmit( str ){
   </div>
 
 
-  <script>
-      $("#CheckAll").change(function () {
-          $("input:checkbox").prop('checked', $(this).prop("checked"));
-      });
-  </script>
   <div>
   <table class="table table-striped  bulk_action" >
     <tr>
@@ -87,7 +84,7 @@ function deleteOnSubmit( str ){
     </tr>
    {% for items in bill.billitem_set.all %}
     <tr>
-      <td><input type="checkbox" name="dailylogs" id='dailylog_{{ items.item.id }}' value="{{ items.item.id }}" />{{ forloop.counter }}</td>
+      <td><input type="checkbox" class='cb' name="dailylogs" id='dailylog_{{ items.item.id }}' value="{{ items.item.id }}" />{{ forloop.counter }}</td>
       <td>{{ items.item.work_date }}</td>
       <td>{{ items.item.start_at }} - {{ items.item.end_with }}</td>
       <td>{{ items.item.opreateDesc }} </td>
@@ -97,7 +94,13 @@ function deleteOnSubmit( str ){
     </tr>
   {% endfor %}
   </table>
+  <script>
+  	$("#CheckAll").change(function(){
+  		var check = $(this).is(":checked");
+  		$(".cb").prop("checked", check);
+  	});
 
+  </script>
 
   </div>
 </form>

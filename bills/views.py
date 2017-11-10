@@ -9,11 +9,11 @@ from django.db.models import Q
 from django.contrib import messages
 
 # Create your views here.
-from .forms import BillCreateForm,BillGenerateForm
+from .forms import BillCreateForm,BillGenerateForm,BatchPrintBills,BillEditForm
 from .models import Bill, BillItem
 from customers.models import Customer
 from dailywork.models import Dailylog
-from .forms import BillEditForm
+
 
 
 class BillDetail(DetailView):
@@ -35,14 +35,13 @@ class BillUpdate(UpdateView):
     success_url = reverse_lazy('bills:bill_list')
 
 
-
+# 批次產生請款單
 def generate_bill(request):
 # 先抓出符合條件的工作日誌
     title = '結轉請款單'
     form = BillGenerateForm(request.POST or None)
     date =  request.POST.get('ord_date')
     if form.is_valid():
-
 
         logs = Dailylog.objects.filter(payrequest=False ,
                                         is_freecharge=False,
@@ -55,9 +54,6 @@ def generate_bill(request):
         if custs.count()== 0:
             messages.success(request, '無可新增的請款單')
             return render(request,'bills/bill_generate.html',locals())
-
-
-
 
     # 迴圈產生請款單
         for cust in custs:
@@ -78,14 +74,12 @@ def generate_bill(request):
         messages.success(request, '新增請款單成功')
         return redirect('bills:bill_list')
 
-        # return render(request,'bills/bill_list.html',locals())
-
     return render(request,'bills/bill_generate.html',locals())
 
 
 
 
-
+#   產生單張請款單
 def bill_create(request, id):
     #raw_id_fields = ['customer']
     if request.method == 'POST':
@@ -128,7 +122,33 @@ def billitem_delete(request, id):
 
 
 
+#  批次列印請款單的入口
+def print_bills(request):
 
+    form = BatchPrintBills(request.POST or None)
+    if form.is_valid():
+        start= request.POST.get('start_number')
+        end= request.POST.get('end_number')
+
+        course = Bill.objects.filter(bill_number__range=(start, end),is_valid=False, paied=False)
+
+        if course.count()==0:
+            messages.error(request, '找不到可以列印的請款單')
+            return render(request,'bills/bill_generate.html',locals())
+
+
+        response = HttpResponse(content_type='application/pdf')
+        filename = 'bill.pdf'
+        response['Content-Disposition'] = 'filename=' + filename
+        _generate_batch(course, response)
+
+        return  response
+
+    return render(request,'bills/bill_generate.html',locals())
+
+
+
+#  列印請款單的入口
 def gen_pdfv2(request,id):
     course = get_object_or_404(Bill,id=id)
     response = HttpResponse(content_type='application/pdf')
@@ -165,11 +185,7 @@ styles = getSampleStyleSheet()
 Title = "建龍環保有限公司"
 Subject = "請款單"
 
-# logo = settings.STATIC_ROOT +"/img/alder_logo.png"
-# upline = settings.STATIC_ROOT +"/img/alder_upline.jpg"
-# footer_line = settings.STATIC_ROOT +"/img/footer_line.jpg"
-#factory_img = settings.STATIC_ROOT +"/img/factory.png"
-# certification_img = settings.STATIC_ROOT +"/img/certification.png"
+
 pdfmetrics.registerFont(TTFont('simhei', 'simhei.ttf'))
 pdfmetrics.registerFont(TTFont('Vera', 'Vera.ttf'))
 pdfmetrics.registerFont(TTFont('VeraBd', 'VeraBd.ttf'))
@@ -195,23 +211,14 @@ def myLaterPage(canvas, doc):
     canvas.setFont('Times-Roman', 9)
     # canvas.drawImage(logo, 520,780, mask='auto', width=55,height=45)
     canvas.drawString(530, 0.45 * inch, "Page %d " % ( doc.page) )
-    # canvas.drawString(inch, 0.45 * inch, "Page %d %s" % ( doc.page, pageinfo) )
-    # canvas.drawImage(footer_line, 25, 805, mask='auto', width=485,height=20)
+
     contact_address = ""
 
     # 地址放在上面的圖騰下
     canvas.setFont('VeraBd', 9)
     # canvas.drawString(30, 795 ,  contact_info  )
     canvas.setFont('Times-Roman', 9)
-    # canvas.drawString(30, 785 ,  contact_address )
-    # canvas.drawImage(upline, 25, 25, mask='auto', width=490,height=20)
 
-    # 地址放在下面的圖騰下
-    # canvas.setFont('VeraBd', 9)
-    # canvas.drawString(30, 40 ,  contact_info  )
-    # canvas.setFont('Times-Roman', 9)
-    # canvas.drawString(30, 25 ,  contact_address )
-    # canvas.drawImage(upline, 25, 50, mask='auto', width=540,height=20)
 
 
     canvas.restoreState()
@@ -253,6 +260,7 @@ class ParagraphStyle(PropertySet):
         }
 
 
+# 單張的請款單
 def _generate_pdfv2(course, output):
     from reportlab.lib.enums import TA_JUSTIFY, TA_RIGHT, TA_LEFT, TA_CENTER
     from reportlab.lib.pagesizes import A4
@@ -390,3 +398,165 @@ def _generate_pdfv2(course, output):
 
 
     doc.build(Story, onFirstPage=myFirstPage, onLaterPages=myLaterPage )
+
+
+
+
+
+
+
+# 批次的請款單
+def _generate_batch(course, output):
+    from reportlab.lib.enums import TA_JUSTIFY, TA_RIGHT, TA_LEFT, TA_CENTER
+    from reportlab.lib.pagesizes import A4
+    from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, Image, Table , TableStyle
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle,PropertySet
+    from reportlab.lib.units import mm, inch
+    from reportlab.lib import colors
+    from reportlab.platypus import XPreformatted, Preformatted
+    from django.conf import settings
+    from reportlab.pdfgen import canvas
+    pdfmetrics.registerFont(TTFont('simhei', 'simhei.ttf'))
+    pdfmetrics.registerFont(TTFont('Arialuni', 'arialuni.ttf'))
+
+    doc = SimpleDocTemplate(
+        output,pagesize=A4,
+        rightMargin=.5*inch,leftMargin=.5*inch,
+        topMargin=.4*inch,bottomMargin=.6*inch
+    )
+
+
+    Story = [Spacer(0, 0.0*inch)]
+    style = styles["Normal"]
+    styleN = styles['Normal']
+    styleH = styles['Heading1']
+
+    for bill in course:
+
+        stylesheet=getSampleStyleSheet()
+        normalStyle = stylesheet['Normal']
+
+        hat = [
+                ['建龍環保有限公司'],
+                ['請款單'],
+                ['']
+        ]
+
+
+        h = Table( hat, colWidths=[3.2*inch] ,style=[
+                            ('FONTNAME', (0,0),(0,-1), 'simhei'),
+                            ('SPAN',(0,0),(0,0)),
+                            ('VALIGN',(0,0),(0,-1),'TOP'),
+                            ('SIZE',(0,0),(0,-1), 18),
+                            ('ALIGN',(0,0),(0,-1), 'CENTER'),
+                        ])
+
+        Story.append(h)
+
+
+
+
+        header = [
+                  ['請款單號',':', bill.bill_number,'','請款日期',':', bill.ord_date],
+                  ['客戶名稱',':', bill.customer.title,'', '統一編號',':', bill.customer.unikey],
+                  ['聯絡電話',':', bill.customer.phone,'','傳真號碼',':', bill.customer.faxno],
+                  ['地址',':', bill.customer.address,'', '','', ""],
+                  ]
+
+        h = Table(header, colWidths=[0.6*inch, 0.1*inch, 3.2*inch, 1.4*inch, 0.6*inch, 0.1*inch, 1.6*inch] ,style=[
+
+                            ('FONTNAME', (0,0),(6,-1), 'simhei'),
+                            ('SPAN',(2,0),(3,0)),
+                            ('VALIGN',(0,0),(0,-1),'TOP'),
+                            ('ALIGN',(3,0),(3,-1), 'LEFT'),
+
+                        ])
+
+        Story.append(h)
+
+
+        element = []
+        tableheader = ['項次','工作日期', '起迄地點', '內容描述' ,'數量','單價','小計']
+
+        element.append(tableheader)
+        loopcounter = 1
+        grund_total = 0
+        for obj in bill.billitem_set.all():
+
+            myitem = []
+            myitem.append( loopcounter )
+
+            workdate = obj.item.work_date
+            place = obj.item.start_at + "-" +obj.item.end_with
+            workdesc = obj.item.opreateDesc
+            qty = obj.item.quantity
+            uom = obj.item.uom
+            str_qty = str('{:,.0f}'.format(int(qty))) + ' ' + str(uom)
+            uniprice = obj.item.uniprice
+
+            myitem.append( workdate)
+            myitem.append( place)
+            myitem.append( workdesc )
+            myitem.append( str_qty )
+            myitem.append(  str('{:,.0f}'.format(int( uniprice )))  )
+            myitem.append(  str('{:,.0f}'.format(int( obj.item.get_amount() ))) )
+
+            element.append(myitem)
+            loopcounter += 1
+
+        #repeatRows=1 是指第一行(表頭) 換頁時會重複
+        t = Table(element, colWidths=[0.3*inch, 0.8*inch, 1.4*inch, 2.8*inch, 0.6*inch,  0.8*inch, 0.8*inch] , repeatRows=1)
+
+        t.setStyle(
+            TableStyle(
+                [
+                #   ('BACKGROUND',(0,0),(6,0),colors.skyblue),
+                ('LINEBELOW', (0,0), (6,0), 1, colors.black),
+                 ('FONTNAME', (0,0),(6,-1), 'simhei'),
+                 ('ALIGN',(0,0),(0,0),'CENTER'),
+                 ('ALIGN',(4,0),(5,0),'LEFT'),
+                #  ('SIZE',(0,1),(0,-1), 8),
+                #  ('SIZE',(2,1),(2,-1), 8),
+                 ('VALIGN',(0,0),(4,-1),'TOP'),
+                 ('ALIGN',(4,0),(6,-1), 'RIGHT'),
+                #  ('TEXTCOLOR',(3,1),(4,-1), colors.blue),
+                 ('SIZE',(0,1),(4,-1), 10),
+                 ('LINEBELOW', (0,-1), (-1,-1), 1, colors.black),
+                 ]
+            )
+        )
+
+        Story.append(t)
+
+        myinfo = "匯款帳號：" + "\n" +"        新光銀行：八德分行" + "\n" + "        帳號：0596-50-000-6453" + "\n" + "        戶名：林泰成"
+
+        #頁首的資訊
+        #因為要套用字型Arialuni, 所以將comment改為Paragraph
+        comment = Paragraph('''
+           <para align=left spaceb=3><font face="simhei" >'''+ str(myinfo).replace('\n','<br/>\n') +'''</font></para>''',
+           styles["BodyText"])
+
+        tax = int(bill.get_tax_amount())
+        total = int(bill.get_grand_amount())
+
+
+        footer = [
+                    [ '', '', '','', ''   ],
+                    [ '匯款帳號：', '', '金額小計：','', str('{:,.0f}'.format(int( bill.get_total_amount() )))   ],
+                    ['','新光銀行：八德分行', '稅額：','', str('{:,.0f}'.format(int( tax )))  ],
+                    ['','帳號：0596-50-000-6453', '請款金額：','', str('{:,.0f}'.format(int( total )))  ],
+                    ['','戶名：林泰成', '', '',''  ],
+                      ]
+
+        f = Table(footer,colWidths=[ 0.6*inch, 2.5*inch, 2.5*inch, 0.6*inch, 0.6*inch] ,style=[
+
+                            ('FONTNAME', (0,0),(4,-1), 'simhei'),
+                            ('ALIGN',(2,0),(4,-1), 'RIGHT'),
+
+                        ])
+
+        Story.append(f)
+        Story.append( PageBreak() )
+        style = getSampleStyleSheet()['Normal']
+        style.leading = 8
+    doc.build(Story )

@@ -33,7 +33,7 @@ function CreateOnSubmit( str ){
   return true;
 }
 </script>
-
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
 
 
 
@@ -61,7 +61,7 @@ function CreateOnSubmit( str ){
 
   <table class="table table-striped" >
     <tr>
-      <th width="5%"><input type="checkbox" id="check-all" /></th>
+      <th width="5%"><input type="checkbox" value="核取方塊" id="CheckAll" />項次</th>
       <th width="15%">工作日期</th>
       <th width="15%">地點起迄</th>
       <th width="20%">工作描述</th>
@@ -72,7 +72,7 @@ function CreateOnSubmit( str ){
     </tr>
   {% for dailylog in object.dailylog_set.all.norequest %}
     <tr>
-        <td><input type="checkbox" name="dailylogs" value="{{ dailylog.id }}" />{{ forloop.counter }}</td>
+        <td><input type="checkbox" class='cb' name="dailylogs"  value="{{ dailylog.id }}" />{{ forloop.counter }}</td>
         <td>{{ dailylog.work_date }}</td>
         <td>{{ dailylog.start_at }}-{{ dailylog.end_with }}</td>
         <td>{{ dailylog.opreateDesc }}</td>
@@ -82,6 +82,14 @@ function CreateOnSubmit( str ){
         <td>{{ dailylog.notes }}</td>
     </tr>
   {% endfor %}
+
+
   </table>
 </form>
+<script>
+  $("#CheckAll").change(function(){
+    var check = $(this).is(":checked");
+    $(".cb").prop("checked", check);
+  });
+</script>
 {% endblock content %}
