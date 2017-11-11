@@ -33,8 +33,6 @@ function CreateOnSubmit( str ){
   return true;
 }
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 
 
 
@@ -87,9 +85,11 @@ function CreateOnSubmit( str ){
   </table>
 </form>
 <script>
-  $("#CheckAll").change(function(){
-    var check = $(this).is(":checked");
-    $(".cb").prop("checked", check);
+  $( document ).ready(function() {
+    $("#CheckAll").change(function(){
+      var check = $(this).is(":checked");
+      $(".cb").prop("checked", check);
+    });
   });
 </script>
 {% endblock content %}

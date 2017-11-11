@@ -30,8 +30,15 @@ class BillNumberManager(models.Manager):
         bill_number = nextNumber + int(order_date[2:7].replace('-',''))*10000
         return bill_number
     #月份序號如：2016080001
-    def month_sequence(self):
+    def month_sequence( self, *args, **kwargs   ):
+        # print(timezone.now())
+    
         order_date, _ = str(timezone.now()).split(' ')
+
+        # if args is not None:
+        #     order_date = str(args)
+
+
         nextNumber = self.filter(created__contains = order_date[:7] ).count()+1
         bill_number = nextNumber + int(order_date[:7].replace('-',''))*10000
         return bill_number

@@ -37,8 +37,6 @@ function deleteOnSubmit( str ){
   return true;
 }
 </script>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-
 
 
 
@@ -95,10 +93,12 @@ function deleteOnSubmit( str ){
   {% endfor %}
   </table>
   <script>
+  $( document ).ready(function() {
   	$("#CheckAll").change(function(){
   		var check = $(this).is(":checked");
   		$(".cb").prop("checked", check);
   	});
+  });
 
   </script>
 
