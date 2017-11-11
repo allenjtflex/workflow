@@ -29,7 +29,7 @@ class BillNumberManager(models.Manager):
     #短的月份序號如：16080001
     def short_month_sequence(self):
         order_date = str(datetime.date.today())
-        nextNumber = self.filter(created__contains = order_date[:7] ).count()+1
+        nextNumber = self.filter(bill_number__contains = order_date[:7] ).count()+1
         bill_number = nextNumber + int(order_date[2:7].replace('-',''))*10000
         return bill_number
     #月份序號如：2016080001
@@ -39,14 +39,11 @@ class BillNumberManager(models.Manager):
 
         if dutydate is not None:
             order_date = dutydate
-        #
-        #
-        #
-        # # if args is not None:
-        #     order_date = str(args)
 
+        
 
-        nextNumber = self.filter(created__contains = order_date[:7] ).count()+1
+        nextNumber = self.filter(bill_number__contains = order_date[:7].replace('-','') ).count()+1
+
         bill_number = nextNumber + int(order_date[:7].replace('-',''))*10000
         return bill_number
     #月份序號如：2016080001

@@ -25,7 +25,7 @@ class BillList(ListView):
     title = "未付款清單"
     model = Bill
     queryset = Bill.objects.filter( is_valid__exact=False ,paied=False)
-    paginate_by = 10
+    paginate_by = 15
 
 
 class BillUpdate(UpdateView):
@@ -40,13 +40,13 @@ def generate_bill(request):
 # 先抓出符合條件的工作日誌
     title = '結轉請款單'
     form = BillGenerateForm(request.POST or None)
-    date =  request.POST.get('ord_date')
+    dutydate =  request.POST.get('ord_date')
     if form.is_valid():
 
         logs = Dailylog.objects.filter(payrequest=False ,
                                         is_freecharge=False,
                                         invalid=False,
-                                        work_date__lte  =date
+                                        work_date__lte  =dutydate
                                 )#.values('customer').order_by('customer').distinct()
 
         custs = logs.values('customer').order_by('customer').distinct()# 去除重複的客戶編號
@@ -58,8 +58,8 @@ def generate_bill(request):
     # 迴圈產生請款單
         for cust in custs:
             customer = Customer.objects.get(pk= cust.get('customer'))
-            next_number = Bill.objects.month_sequence( date )
-            bill = Bill.objects.create(customer=customer,ord_date=date,bill_number=next_number)
+            next_number = Bill.objects.month_sequence( dutydate )            
+            bill = Bill.objects.create(customer=customer,ord_date=dutydate,bill_number=next_number)
 
             cust_logs = logs.filter(customer=customer)
             for cust_log in cust_logs:
@@ -124,6 +124,7 @@ def billitem_delete(request, id):
 
 #  批次列印請款單的入口, 用單據號碼區間查詢
 def print_bills(request):
+    title = '批次列印請款單'
 
     form = BatchPrintBills(request.POST or None)
     if form.is_valid():
@@ -318,7 +319,7 @@ def _generate_batch(course, output):
 
 
         header = [
-                  ['請款單號',':', bill.bill_number,'','請款日期',':', bill.ord_date],
+                  ['請款單號',':', bill.bill_number,'','請款月份',':', str(bill.ord_date)[:7]  ],
                   ['客戶名稱',':', bill.customer.title,'', '統一編號',':', bill.customer.unikey],
                   ['聯絡電話',':', bill.customer.phone,'','傳真號碼',':', bill.customer.faxno],
                   ['地址',':', bill.customer.address,'', '','', ""],

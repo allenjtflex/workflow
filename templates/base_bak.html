@@ -2,7 +2,7 @@
 {% load i18n %}
 {% load humanize %}
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
     <!-- Latest compiled and minified CSS -->
     <!-- Bootstrap -->
@@ -25,6 +25,9 @@
     <link rel="stylesheet" href='{% static  "css/custom.min.css" %}' >
 
     <script src='{% static "js/jquery.min.js" %}'></script>
+
+
+    <meta charset="utf-8">
     <title>
       {% block title%}  {% trans "建龍環保有限公司" %} {% endblock title %}
     </title>
@@ -32,44 +35,31 @@
       {% block style %}{% endblock style %}
     </style>
   </head>
-
-  <body class="nav-md footer_fixed">
-    <div class="container body">
+  <body class="nav-md ">
+    <div class="container body ">
       <div class="main_container">
         <div class="col-md-3 left_col">
           <div class="left_col scroll-view">
             <div class="navbar nav_title" style="border: 0;">
               <a href="/" class="site_title"><i class="fa fa-paw"></i> <span>建龍環保有限公司</span></a>
             </div>
-
-            <div class="clearfix"></div>
-            <br />
-
-            {% include "sidebar.html"  %}
-          </div>
+            <div class="clearfix">{% include "sidebar.html"  %}</div>
+         </div>
+        </div>
+        <div>
+          {% include "top_nav.html" %}
         </div>
 
-        {% include "top_nav.html" %}
-
-        <!-- page content -->
-        <div class="right_col" role="main">
-          {% block content %}
-          {% endblock content %}
+        <div class="col-sm-10 col-md-10 col-sm-offset-2 col-md-offset-2">
+        {% block content %}
+        {% endblock content %}
         </div>
-        <!-- /page content -->
+        <div>
+          {% include "footer.html"  %}
+        </div>
 
-        <!-- footer content -->
-        <footer>
-          <div class="pull-right">
-            Gentelella - Bootstrap Admin Template by <a href="https://colorlib.com">Colorlib</a>
-          </div>
-          <div class="clearfix"></div>
-        </footer>
-        <!-- /footer content -->
+        </div>
       </div>
-    </div>
-
-    <!-- jQuery -->
     <!-- jQuery -->
 
     <!-- Latest compiled and minified JavaScript -->

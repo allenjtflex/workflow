@@ -18,7 +18,7 @@ class CustomerDetail(DetailView):
 
 class CustomerList(ListView):
     model = Customer
-    paginate_by = 10
+    paginate_by = 15
 
     def get_queryset(self):
         query = self.request.GET.get('q')

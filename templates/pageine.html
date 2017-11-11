@@ -1,4 +1,3 @@
-
   <div class="col-sm-4 col-md-4 col-sm-offset-5 col-md-offset-5">
     <span align="center">
         <div class="pagination">
@@ -8,11 +7,9 @@
                   {% if page_obj.has_previous %}
                       <li><a href="?page={{ page_obj.previous_page_number }}">上一頁</a></li>
                   {% endif %}
-
                   <span class="current">
                       Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
                   </span>
-
                   {% if page_obj.has_next %}
                       <li><a href="?page={{ page_obj.next_page_number }}">下一頁</a></li>
                   {% endif %}

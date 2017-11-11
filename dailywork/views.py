@@ -18,7 +18,7 @@ class DailylogDetail(DetailView):
 
 class DailylogList(ListView):
 	model = Dailylog
-	paginate_by = 10
+	paginate_by = 15
 	ordering = ['-work_date']
 
 	def get_queryset(self):
