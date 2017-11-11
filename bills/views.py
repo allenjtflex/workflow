@@ -58,7 +58,7 @@ def generate_bill(request):
     # 迴圈產生請款單
         for cust in custs:
             customer = Customer.objects.get(pk= cust.get('customer'))
-            next_number = Bill.objects.month_sequence()
+            next_number = Bill.objects.month_sequence( date )
             bill = Bill.objects.create(customer=customer,ord_date=date,bill_number=next_number)
 
             cust_logs = logs.filter(customer=customer)
