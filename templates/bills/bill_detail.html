@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load humanize %}
+{% load l10n %}
 
 
 
@@ -86,6 +87,7 @@ function deleteOnSubmit( str ){
       <td>{{ items.item.work_date }}</td>
       <td>{{ items.item.start_at }} - {{ items.item.end_with }}</td>
       <td>{{ items.item.opreateDesc }} </td>
+      
       <td  align="right">{{ items.item.quantity|intcomma  }} {{ items.item.uom}}</td>
       <td  align="right">{{ items.item.uniprice|intcomma  }} </td>
       <td  align="right">{{ items.item.get_amount|intcomma }} </td>
