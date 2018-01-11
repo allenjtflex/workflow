@@ -23,6 +23,8 @@ def index(request):
 
 class IndexList(ListView):
 
+    template_name = 'index.html'
+
 
     def get_queryset(self, *args, **kwargs):
 
